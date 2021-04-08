@@ -1,8 +1,10 @@
 package com.github.chitralverma.jinja.maven.plugin;
 
+/** Common Plugin Constants */
 public class PluginConstants {
 
   public static String PluginGoalPrefix = "jinja";
+
   public static String DefaultPluginGoal = "generate";
 
   public static String Skip = "jinja-maven.skip";

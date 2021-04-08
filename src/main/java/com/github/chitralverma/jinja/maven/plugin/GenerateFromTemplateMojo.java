@@ -46,15 +46,15 @@ import org.apache.maven.plugins.annotations.Parameter;
 @Mojo(name = "generate", defaultPhase = LifecyclePhase.GENERATE_RESOURCES)
 public class GenerateFromTemplateMojo extends AbstractMojo {
 
-  /** Configuration to skip the entire goal. */
+  /** Configuration to skip the entire goal. Default: false */
   @Parameter(property = "jinja-maven.skip", defaultValue = "false")
   private final Boolean skip = Boolean.FALSE;
 
-  /** Configuration to fail if values for template are missing. */
+  /** Configuration to fail if values for template are missing. Default: true */
   @Parameter(property = "jinja-maven.failOnMissingValues", defaultValue = "true")
   private final Boolean failOnMissingValues = Boolean.TRUE;
 
-  /** Configuration to control if output files can be overwritten. */
+  /** Configuration to control if output files can be overwritten. Default: false */
   @Parameter(property = "jinja-maven.overwriteOutput", defaultValue = "false")
   private final Boolean overwriteOutput = Boolean.FALSE;
 
@@ -65,6 +65,17 @@ public class GenerateFromTemplateMojo extends AbstractMojo {
    */
   @Parameter private final List<ResourceBean> resourceSet = Collections.emptyList();
 
+  /**
+   * Entry point to rendering logic. The whole process can be optionally skipped if required using
+   * the `Skip` configuration.
+   *
+   * <p>Step 1: Perform validation of configuration values provided by the user. Step 2: For each
+   * resource bundle, render the concrete files as per the provided template by substituting values
+   * from the value files. Step 3: Write concrete outputs as files.
+   *
+   * @throws MojoExecutionException Rendering errors result in `MojoExecutionException`
+   * @throws MojoFailureException Validations errors result in `MojoFailureException`
+   */
   public void execute() throws MojoExecutionException, MojoFailureException {
     getLog().debug("Plugin execution begins.");
 
@@ -91,6 +102,7 @@ public class GenerateFromTemplateMojo extends AbstractMojo {
     getLog().debug("Plugin execution ends.");
   }
 
+  /** Prints the configuration values provided by the user to debug level. */
   private void printConfigs() {
     ObjectMapper mapper = new ObjectMapper();
     mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
@@ -109,6 +121,11 @@ public class GenerateFromTemplateMojo extends AbstractMojo {
     }
   }
 
+  /**
+   * Validates the configuration values provided by the user.
+   *
+   * @throws MojoFailureException Validations errors result in `MojoFailureException`
+   */
   private void validate() throws MojoFailureException {
     getLog().debug("Starting validations.");
 
@@ -116,6 +133,11 @@ public class GenerateFromTemplateMojo extends AbstractMojo {
     getLog().debug("Validations complete");
   }
 
+  /**
+   * Validates the resource set values provided by the user.
+   *
+   * @throws MojoFailureException Validations errors result in `MojoFailureException`
+   */
   private void validateResourceSet() throws MojoFailureException {
     if (resourceSet.isEmpty()) {
       throw new MojoFailureException(
@@ -130,6 +152,11 @@ public class GenerateFromTemplateMojo extends AbstractMojo {
     }
   }
 
+  /**
+   * Validates a resource of resource set as defined by the user.
+   *
+   * @throws MojoFailureException Validations errors result in `MojoFailureException`
+   */
   private void validateResource(ResourceBean resource) throws MojoFailureException {
     if (resource == null) {
       throw new MojoFailureException(
@@ -152,6 +179,11 @@ public class GenerateFromTemplateMojo extends AbstractMojo {
     validateOutputFile(resource.getOutputFilePath());
   }
 
+  /**
+   * Validates a file based on path provided by the user for a resource.
+   *
+   * @throws MojoFailureException Validations errors result in `MojoFailureException`
+   */
   private void validateFile(String key, File file) throws MojoFailureException {
     if (file == null) {
       throw new MojoFailureException(
@@ -172,6 +204,11 @@ public class GenerateFromTemplateMojo extends AbstractMojo {
     }
   }
 
+  /**
+   * Validates rules are different for output files.
+   *
+   * @throws MojoFailureException Validations errors result in `MojoFailureException`
+   */
   private void validateOutputFile(File file) throws MojoFailureException {
     if (file == null) {
       throw new MojoFailureException(
@@ -200,6 +237,20 @@ public class GenerateFromTemplateMojo extends AbstractMojo {
     }
   }
 
+  /**
+   * Rendering logic using Jinjava.
+   *
+   * <p>Value file(s) are read as JSON Objects using jackson and all the nodes are iterated add keys
+   * and typed values to a common context which will hold all values for substitution into the
+   * template.
+   *
+   * <p>Reason to choose JSON format for value files: - Type safety of values - Unstructured -
+   * Support complex types - Human readable and popular
+   *
+   * <p>Once the rendering is complete, errors are thrown if required.
+   *
+   * @throws MojoExecutionException Rendering errors result in `MojoFailureException`
+   */
   private String renderFromResource(ResourceBean resource) throws MojoExecutionException {
     JinjavaConfig jc =
         JinjavaConfig.newBuilder().withFailOnUnknownTokens(failOnMissingValues).build();
@@ -252,9 +303,16 @@ public class GenerateFromTemplateMojo extends AbstractMojo {
     }
   }
 
-  private void writeOutput(File outputFile, String renderedResource) throws MojoExecutionException {
+  /**
+   * Writes the rendered content to a file.
+   *
+   * @param outputFile Output file as defined in some resource.
+   * @param renderedContent Content to be written to file as output.
+   * @throws MojoExecutionException `IOException` are recorded if any.
+   */
+  private void writeOutput(File outputFile, String renderedContent) throws MojoExecutionException {
     try {
-      FileUtils.writeStringToFile(outputFile, renderedResource, StandardCharsets.UTF_8, false);
+      FileUtils.writeStringToFile(outputFile, renderedContent, StandardCharsets.UTF_8, false);
     } catch (IOException e) {
       throw new MojoExecutionException("Error occurred while writing output.", e);
     }
