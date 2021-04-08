@@ -1,2 +1,2 @@
-Config Template Plugin
+Jinja Maven Plugin
 ====================
