@@ -14,5 +14,5 @@
  *    limitations under the License.
  */
 
-/** Jinja Maven plugin */
+/** Jinja Maven plugin. */
 package com.github.chitralverma.jinja.maven.plugin;

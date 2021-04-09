@@ -49,15 +49,16 @@ import org.apache.maven.plugins.annotations.Parameter;
 /**
  * {@link GenerateFromJinjaTemplateMojo}
  *
- * <p>This mojo automatically renders concrete resources from Jinja template files as part of Maven
- * build process.
+ * <p>This mojo automatically renders concrete resources from Jinja template
+ * files as part of Maven build process.
  *
- * <p>Users define template file(s) and corresponding value file(s). When the plugin executes, it
- * substitutes the values from value file(s) in the template file(s) and renders concrete
- * resource(s) at the configured location.
+ * <p>Users define template file(s) and corresponding value file(s). When the
+ * plugin executes, it substitutes the values from value file(s) in the template
+ * file(s) and renders concrete resource(s) at the configured location.
  *
- * <p>This plugin uses jinjava, see <a href="https://github.com/HubSpot/jinjava#jinjava"
- * target="_blank"> this link</a> for more info.
+ * <p>This plugin uses jinjava, see <a
+ * href="https://github.com/HubSpot/jinjava#jinjava" target="_blank"> this
+ * link</a> for more info.
  */
 @Mojo(name = "generate", defaultPhase = LifecyclePhase.GENERATE_RESOURCES)
 public class GenerateFromJinjaTemplateMojo extends AbstractMojo {
@@ -67,30 +68,38 @@ public class GenerateFromJinjaTemplateMojo extends AbstractMojo {
   private final Boolean skip = Boolean.FALSE;
 
   /** Configuration to fail if values for template are missing. Default: true */
-  @Parameter(property = "jinja-maven.failOnMissingValues", defaultValue = "true")
+  @Parameter(
+      property = "jinja-maven.failOnMissingValues",
+      defaultValue = "true")
   private final Boolean failOnMissingValues = Boolean.TRUE;
 
-  /** Configuration to control if output files can be overwritten. Default: false */
+  /**
+   * Configuration to control if output files can be overwritten. Default: false
+   */
   @Parameter(property = "jinja-maven.overwriteOutput", defaultValue = "false")
   private final Boolean overwriteOutput = Boolean.FALSE;
 
   /**
-   * Configuration for resource set. A resource set is bundle of one or more resources which can be
-   * translated to a rendering job. It contains a template file path, one or more value files and an
-   * output file path.
+   * Configuration for resource set. A resource set is bundle of one or more
+   * resources which can be translated to a rendering job. It contains a
+   * template file path, one or more value files and an output file path.
    */
-  @Parameter private final List<ResourceBean> resourceSet = Collections.emptyList();
+  @Parameter
+  private final List<ResourceBean> resourceSet = Collections.emptyList();
 
   /**
-   * Entry point to rendering logic. The whole process can be optionally skipped if required using
-   * the `Skip` configuration.
+   * Entry point to rendering logic. The whole process can be optionally skipped
+   * if required using the `Skip` configuration.
    *
-   * <p>Step 1: Perform validation of configuration values provided by the user. Step 2: For each
-   * resource bundle, render the concrete files as per the provided template by substituting values
-   * from the value files. Step 3: Write concrete outputs as files.
+   * <p>Step 1: Perform validation of configuration values provided by the user.
+   * Step 2: For each resource bundle, render the concrete files as per the
+   * provided template by substituting values from the value files. Step 3:
+   * Write concrete outputs as files.
    *
-   * @throws MojoExecutionException Rendering errors result in `MojoExecutionException`
-   * @throws MojoFailureException Validations errors result in `MojoFailureException`
+   * @throws MojoExecutionException Rendering errors result in
+   *     `MojoExecutionException`
+   * @throws MojoFailureException Validations errors result in
+   *     `MojoFailureException`
    */
   public void execute() throws MojoExecutionException, MojoFailureException {
     getLog().debug("Plugin execution begins.");
@@ -99,7 +108,7 @@ public class GenerateFromJinjaTemplateMojo extends AbstractMojo {
       getLog()
           .warn(
               String.format(
-                  "%s:%s is skipped as %s=true", PluginGoalPrefix, DefaultPluginGoal, Skip));
+                  "jinja:%s is skipped as %s=true", DEFAULT_PLUGIN_GOAL, SKIP));
     } else {
       validate();
       printConfigs();
@@ -125,10 +134,11 @@ public class GenerateFromJinjaTemplateMojo extends AbstractMojo {
 
     try {
       ObjectNode configuration = mapper.createObjectNode();
-      configuration.set(Skip, BooleanNode.valueOf(skip));
-      configuration.set(ResourceSet, new POJONode(resourceSet));
-      configuration.set(FailOnMissingValues, new POJONode(failOnMissingValues));
-      configuration.set(OverwriteOutput, new POJONode(overwriteOutput));
+      configuration.set(SKIP, BooleanNode.valueOf(skip));
+      configuration.set(RESOURCE_SET, new POJONode(resourceSet));
+      configuration.set(
+          FAIL_ON_MISSING_VALUES, new POJONode(failOnMissingValues));
+      configuration.set(OVERWRITE_OUTPUT, new POJONode(overwriteOutput));
 
       String jsonConfig = mapper.writeValueAsString(configuration);
       getLog().debug(String.format("Plugin Config:\n%s", jsonConfig));
@@ -140,7 +150,8 @@ public class GenerateFromJinjaTemplateMojo extends AbstractMojo {
   /**
    * Validates the configuration values provided by the user.
    *
-   * @throws MojoFailureException Validations errors result in `MojoFailureException`
+   * @throws MojoFailureException Validations errors result in
+   *     `MojoFailureException`
    */
   private void validate() throws MojoFailureException {
     getLog().debug("Starting validations.");
@@ -152,14 +163,17 @@ public class GenerateFromJinjaTemplateMojo extends AbstractMojo {
   /**
    * Validates the resource set values provided by the user.
    *
-   * @throws MojoFailureException Validations errors result in `MojoFailureException`
+   * @throws MojoFailureException Validations errors result in
+   *     `MojoFailureException`
    */
   private void validateResourceSet() throws MojoFailureException {
     if (resourceSet.isEmpty()) {
       throw new MojoFailureException(
           "Error occurred during configuration validation.",
           new IllegalArgumentException(
-              String.format("'%s' must be defined with at least 1 resource.", resourceSet)));
+              String.format(
+                  "'%s' must be defined with at least 1 resource.",
+                  resourceSet)));
     }
 
     for (ResourceBean resource : resourceSet) {
@@ -171,13 +185,17 @@ public class GenerateFromJinjaTemplateMojo extends AbstractMojo {
   /**
    * Validates a resource of resource set as defined by the user.
    *
-   * @throws MojoFailureException Validations errors result in `MojoFailureException`
+   * @param resource A user defined resource
+   * @throws MojoFailureException Validations errors result in
+   *     `MojoFailureException`
    */
-  private void validateResource(ResourceBean resource) throws MojoFailureException {
+  private void validateResource(ResourceBean resource)
+      throws MojoFailureException {
     if (resource == null) {
       throw new MojoFailureException(
           "Error occurred during configuration validation.",
-          new IllegalArgumentException("Malformed 'resource' was encountered."));
+          new IllegalArgumentException(
+              "Malformed 'resource' was encountered."));
     }
 
     validateFile("templateFilePath", resource.getTemplateFilePath());
@@ -185,7 +203,8 @@ public class GenerateFromJinjaTemplateMojo extends AbstractMojo {
     if (resource.getValueFiles().isEmpty()) {
       throw new MojoFailureException(
           "Error occurred during configuration validation.",
-          new IllegalArgumentException("'valueFiles' must be defined with at least 1 path."));
+          new IllegalArgumentException(
+              "'valueFiles' must be defined with at least 1 path."));
     }
 
     for (File file : resource.getValueFiles()) {
@@ -198,38 +217,47 @@ public class GenerateFromJinjaTemplateMojo extends AbstractMojo {
   /**
    * Validates a file based on path provided by the user for a resource.
    *
-   * @throws MojoFailureException Validations errors result in `MojoFailureException`
+   * @param key Identifier for the type of file path (templateFile or valueFile)
+   * @param file Representation of file and directory path
+   * @throws MojoFailureException Validations errors result in
+   *     `MojoFailureException`
    */
   private void validateFile(String key, File file) throws MojoFailureException {
     if (file == null) {
       throw new MojoFailureException(
           "Error occurred during configuration validation.",
-          new IllegalArgumentException(String.format("'%s' path must not be null.", key)));
+          new IllegalArgumentException(
+              String.format("'%s' path must not be null.", key)));
     }
 
     if (!file.exists()) {
       throw new MojoFailureException(
           "Error occurred during configuration validation.",
-          new IllegalArgumentException(String.format("'%s' path '%s' must exist.", key, file)));
+          new IllegalArgumentException(
+              String.format("'%s' path '%s' must exist.", key, file)));
     }
 
     if (!file.isFile()) {
       throw new MojoFailureException(
           "Error occurred during configuration validation.",
-          new IllegalArgumentException(String.format("'%s' path '%s' must be a file.", key, file)));
+          new IllegalArgumentException(
+              String.format("'%s' path '%s' must be a file.", key, file)));
     }
   }
 
   /**
    * Validates rules are different for output files.
    *
-   * @throws MojoFailureException Validations errors result in `MojoFailureException`
+   * @param file Representation of file and directory path
+   * @throws MojoFailureException Validations errors result in
+   *     `MojoFailureException`
    */
   private void validateOutputFile(File file) throws MojoFailureException {
     if (file == null) {
       throw new MojoFailureException(
           "Error occurred during configuration validation.",
-          new IllegalArgumentException("'outputFilePath' path must not be null."));
+          new IllegalArgumentException(
+              "'outputFilePath' path must not be null."));
     }
 
     if (file.exists()) {
@@ -237,7 +265,8 @@ public class GenerateFromJinjaTemplateMojo extends AbstractMojo {
         throw new MojoFailureException(
             "Error occurred during configuration validation.",
             new IllegalArgumentException(
-                String.format("'outputFilePath' path '%s' must be a file.", file)));
+                String.format(
+                    "'outputFilePath' path '%s' must be a file.", file)));
       } else if (!overwriteOutput) {
         throw new MojoFailureException(
             "Error occurred during configuration validation.",
@@ -249,38 +278,48 @@ public class GenerateFromJinjaTemplateMojo extends AbstractMojo {
       getLog()
           .warn(
               String.format(
-                  "'outputFilePath' path '%s' already exists and will be overwritten.", file));
+                  "'outputFilePath' path '%s' already exists "
+                      + "and will be overwritten.",
+                  file));
     }
   }
 
   /**
    * Rendering logic using Jinjava.
    *
-   * <p>Value file(s) are read as JSON Objects using jackson and all the nodes are iterated add keys
-   * and typed values to a common context which will hold all values for substitution into the
-   * template.
+   * <p>Value file(s) are read as JSON Objects using jackson and all the nodes
+   * are iterated add keys and typed values to a common context which will hold
+   * all values for substitution into the template.
    *
-   * <p>Reason to choose JSON format for value files: - Type safety of values - Unstructured -
-   * Support complex types - Human readable and popular
+   * <p>Reason to choose JSON format for value files: - Type safety of values -
+   * Unstructured - Support complex types - Human readable and popular
    *
    * <p>Once the rendering is complete, errors are thrown if required.
    *
-   * @throws MojoExecutionException Rendering errors result in `MojoFailureException`
+   * @param resource A user defined resource
+   * @return Rendered content as string
+   * @throws MojoExecutionException Rendering errors result in
+   *     `MojoFailureException`
    */
-  private String renderFromResource(ResourceBean resource) throws MojoExecutionException {
+  private String renderFromResource(ResourceBean resource)
+      throws MojoExecutionException {
     JinjavaConfig jc =
-        JinjavaConfig.newBuilder().withFailOnUnknownTokens(failOnMissingValues).build();
+        JinjavaConfig.newBuilder()
+            .withFailOnUnknownTokens(failOnMissingValues)
+            .build();
     Jinjava jinjava = new Jinjava(jc);
 
     Map<String, Object> context = Maps.newHashMap();
 
     try {
       String templateContent =
-          FileUtils.readFileToString(resource.getTemplateFilePath(), StandardCharsets.UTF_8);
+          FileUtils.readFileToString(
+              resource.getTemplateFilePath(), StandardCharsets.UTF_8);
 
       for (File valueFile : resource.getValueFiles()) {
         ObjectMapper mapper = new ObjectMapper();
-        Iterator<Map.Entry<String, JsonNode>> iter = mapper.readTree(valueFile).fields();
+        Iterator<Map.Entry<String, JsonNode>> iter =
+            mapper.readTree(valueFile).fields();
 
         while (iter.hasNext()) {
           Map.Entry<String, JsonNode> next = iter.next();
@@ -289,11 +328,13 @@ public class GenerateFromJinjaTemplateMojo extends AbstractMojo {
           if (next.getKey().contains(".")) {
             throw new MojoExecutionException(
                 "Error occurred during resource rendering.",
-                new IllegalArgumentException("Keys of value files cannot contain chars in [.]"));
+                new IllegalArgumentException(
+                    "Keys of value files cannot contain chars in [.]"));
           }
 
           getLog().debug(String.format("Added entry [ %s ] to context.", next));
-          if (nodeType == JsonNodeType.ARRAY || nodeType == JsonNodeType.OBJECT) {
+          if (nodeType == JsonNodeType.ARRAY
+              || nodeType == JsonNodeType.OBJECT) {
             context.put(next.getKey(), next.getValue());
           } else {
             context.put(next.getKey(), next.getValue().asText());
@@ -301,7 +342,8 @@ public class GenerateFromJinjaTemplateMojo extends AbstractMojo {
         }
       }
 
-      RenderResult renderResult = jinjava.renderForResult(templateContent, context);
+      RenderResult renderResult =
+          jinjava.renderForResult(templateContent, context);
 
       if (!renderResult.getErrors().isEmpty() && failOnMissingValues) {
         throw new MojoExecutionException(
@@ -315,7 +357,8 @@ public class GenerateFromJinjaTemplateMojo extends AbstractMojo {
         return renderResult.getOutput();
       }
     } catch (IOException e) {
-      throw new MojoExecutionException("Error occurred during resource rendering.", e);
+      throw new MojoExecutionException(
+          "Error occurred during resource rendering.", e);
     }
   }
 
@@ -326,11 +369,14 @@ public class GenerateFromJinjaTemplateMojo extends AbstractMojo {
    * @param renderedContent Content to be written to file as output.
    * @throws MojoExecutionException `IOException` are recorded if any.
    */
-  private void writeOutput(File outputFile, String renderedContent) throws MojoExecutionException {
+  private void writeOutput(File outputFile, String renderedContent)
+      throws MojoExecutionException {
     try {
-      FileUtils.writeStringToFile(outputFile, renderedContent, StandardCharsets.UTF_8, false);
+      FileUtils.writeStringToFile(
+          outputFile, renderedContent, StandardCharsets.UTF_8, false);
     } catch (IOException e) {
-      throw new MojoExecutionException("Error occurred while writing output.", e);
+      throw new MojoExecutionException(
+          "Error occurred while writing output.", e);
     }
   }
 }

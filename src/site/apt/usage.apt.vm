@@ -1,0 +1,55 @@
+~~  Copyright 2021 Chitral Verma
+~~
+~~  Licensed under the Apache License, Version 2.0 (the "License");
+~~  you may not use this file except in compliance with the License.
+~~  You may obtain a copy of the License at
+~~
+~~      http://www.apache.org/licenses/LICENSE-2.0
+~~
+~~  Unless required by applicable law or agreed to in writing, software
+~~  distributed under the License is distributed on an "AS IS" BASIS,
+~~  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+~~  See the License for the specific language governing permissions and
+~~  limitations under the License.
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/doxia/references/apt-format.html
+
+Usage
+
+  The Jinja Maven Plugin attempts to render concrete resources using
+  Jinja templating engine during project build time.
+
+  Users define template file(s) and corresponding value file(s).
+  When the plugin executes, it substitutes the values from value file(s) in the
+  template file(s) and renders concrete resource(s) at the configured location.
+  This bundle of template file location, value file location(s) and output
+  file location is together called a <<<resource>>>. Users may define one or
+  more resources as part of a <<<resourceSet>>>.
+
+  Details of plugin configuration (resource and resourceSet) are available at
+  {{{./configure.html}this link}}.
+
+  This plugin uses jinjava, see
+  {{{https://github.com/HubSpot/jinjava#jinjava}this link}} for more info.
+
+* Cleaning a Maven project using the command-line
+
+  This plugin can be called to execute in the command-line once it has been
+  configured in the <<<pom.xml>>>. To run the Jinja Maven Plugin, you use:
+
++-----
+  mvn jinja:generate
++-----
+
+  where <<<jinja>>> refers to the plugin's alias, and <<<generate>>> refers
+  to the plugin goal.
+
+  You can also using this with other phases/goals like:
+
++-----
+  mvn clean jinja:generate
++-----
+
+  This plugin automatically runs during a build as it gets executed in the
+  <<<generate-resources>>> phase.

@@ -1,0 +1,63 @@
+~~  Copyright 2021 Chitral Verma
+~~
+~~  Licensed under the Apache License, Version 2.0 (the "License");
+~~  you may not use this file except in compliance with the License.
+~~  You may obtain a copy of the License at
+~~
+~~      http://www.apache.org/licenses/LICENSE-2.0
+~~
+~~  Unless required by applicable law or agreed to in writing, software
+~~  distributed under the License is distributed on an "AS IS" BASIS,
+~~  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+~~  See the License for the specific language governing permissions and
+~~  limitations under the License.
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/doxia/references/apt-format.html
+
+${project.name}
+
+  The Jinja Maven Plugin is used to automatically render concrete resources
+  using Jinja templating engine during project build time.
+
+* Goals Overview
+
+  The Jinja Maven Plugin has only one goal.
+
+  * {{{./generate-mojo.html}jinja:generate}} attempts to renders concrete
+  resources from Jinja template files as part of Maven build process based on
+  user defined <<<resourceSet>>> in plugin configuration.
+
+* Configure Plugin
+
+  Details of plugin configuration (resource and resourceSet) are available at
+  {{{./configure.html}this link}}.
+
+* Usage
+
+  General instructions on how to use the Jinja Maven Plugin can be found on the
+  {{{./usage.html}usage page}} and some more specific use cases are described
+  in the Examples section of navigation.
+
+  In case you still have questions regarding the plugin's usage, please feel
+  free to contact us by raising an issue via the link available on our
+  {{{./issue-management.html}issue tracker}} page. It is also worth browsing/
+  searching through the older issues as well, as someone else might have had
+  the same issue/ question as you.
+
+  If you feel like the plugin is missing a feature or has a defect, you can
+  fill a feature request or bug report via the link on our
+  {{{./issue-management.html}issue tracker}} page. When creating a new issue,
+  please provide a comprehensive description of your concern. Especially for
+  fixing bugs it is crucial that the developers can reproduce your problem.
+  For this reason, entire debug logs, POMs or most preferably little demo
+  projects attached to the issue are very much appreciated.
+
+  Of course, patches are welcome too. Contributors can check out the project
+  from our {{{./scm.html}source repository}}.
+
+* Examples
+
+  In Progress
+
+  []

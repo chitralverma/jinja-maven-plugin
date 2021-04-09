@@ -16,15 +16,16 @@
 
 package com.github.chitralverma.jinja.maven.plugin;
 
-/** Common Plugin Constants */
-public class PluginConstants {
+/** Common Plugin Constants. */
+public final class PluginConstants {
 
-  public static String PluginGoalPrefix = "jinja";
+  private PluginConstants() {}
 
-  public static String DefaultPluginGoal = "generate";
+  public static String DEFAULT_PLUGIN_GOAL = "generate";
 
-  public static String Skip = "jinja-maven.skip";
-  public static String ResourceSet = "jinja-maven.resourceSet";
-  public static String FailOnMissingValues = "jinja-maven.failOnMissingValues";
-  public static String OverwriteOutput = "jinja-maven.overwriteOutput";
+  public static String SKIP = "jinja-maven.skip";
+  public static String RESOURCE_SET = "jinja-maven.resourceSet";
+  public static String FAIL_ON_MISSING_VALUES =
+      "jinja-maven.failOnMissingValues";
+  public static String OVERWRITE_OUTPUT = "jinja-maven.overwriteOutput";
 }
