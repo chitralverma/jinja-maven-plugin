@@ -31,7 +31,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
 /**
- * {@link GenerateFromTemplateMojo}
+ * {@link GenerateFromJinjaTemplateMojo}
  *
  * <p>This mojo automatically renders concrete resources from Jinja template files as part of Maven
  * build process.
@@ -44,7 +44,7 @@ import org.apache.maven.plugins.annotations.Parameter;
  * target="_blank"> this link</a> for more info.
  */
 @Mojo(name = "generate", defaultPhase = LifecyclePhase.GENERATE_RESOURCES)
-public class GenerateFromTemplateMojo extends AbstractMojo {
+public class GenerateFromJinjaTemplateMojo extends AbstractMojo {
 
   /** Configuration to skip the entire goal. Default: false */
   @Parameter(property = "jinja-maven.skip", defaultValue = "false")
