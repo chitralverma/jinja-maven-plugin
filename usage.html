@@ -71,13 +71,90 @@
 <p>Users define template file(s) and corresponding value file(s). When the plugin executes, it substitutes the values from value file(s) in the template file(s) and renders concrete resource(s) at the configured location. This bundle of template file location, value file location(s) and output file location is together called a <code>resource</code>. Users may define one or more resources as part of a <code>resourceSet</code>.</p>
 <p>Details of plugin configuration (resource and resourceSet) are available at <a href="./configure.html">this link</a>.</p>
 <p>This plugin uses jinjava, see <a class="externalLink" href="https://github.com/HubSpot/jinjava#jinjava">this link</a> for more info.</p><section>
-<h3><a name="Cleaning_a_Maven_project_using_the_command-line"></a>Cleaning a Maven project using the command-line</h3>
-<p>This plugin can be called to execute in the command-line once it has been configured in the <code>pom.xml</code>. To run the Jinja Maven Plugin, you use:</p>
+<h3><a name="Installation"></a>Installation</h3>
+<p>Include the below mentioned <code>pluginRepository</code> in your Maven project:</p>
+<div class="source"><pre class="prettyprint">    ...
+
+    &lt;pluginRepositories&gt;
+        ...
+
+        &lt;pluginRepository&gt;
+            &lt;id&gt;ossrh&lt;/id&gt;
+            &lt;name&gt;Central Repository OSSRH - Snapshots&lt;/name&gt;
+            &lt;url&gt;https://oss.sonatype.org/content/repositories/snapshots&lt;/url&gt;
+        &lt;/pluginRepository&gt;
+
+        ...
+    &lt;/pluginRepositories&gt;
+
+    ...</pre></div>
+<p>This will allow you to get the latest snapshot of the plugin.</p>
+<p>To get the releases instead, include the <code>pluginRepository</code> below:</p>
+<div class="source"><pre class="prettyprint">    ...
+
+    &lt;pluginRepositories&gt;
+        ...
+
+        &lt;pluginRepository&gt;
+             &lt;id&gt;ossrh&lt;/id&gt;
+             &lt;name&gt;Central Repository OSSRH - Releases&lt;/name&gt;
+             &lt;url&gt;https://oss.sonatype.org/service/local/staging/deploy/maven2/&lt;/url&gt;
+        &lt;/pluginRepository&gt;
+
+        ...
+    &lt;/pluginRepositories&gt;
+
+    ...</pre></div>
+<p>Once the repository is included add the below plugin to your project:</p>
+<div class="source"><pre class="prettyprint">    ...
+
+    &lt;plugins&gt;
+        ...
+
+        &lt;plugin&gt;
+            &lt;groupId&gt;com.github.chitralverma&lt;/groupId&gt;
+            &lt;artifactId&gt;jinja-maven-plugin&lt;/artifactId&gt;
+            &lt;version&gt;${latest.plugin.version}&lt;/version&gt;
+            &lt;configuration&gt;
+                &lt;resourceSet&gt;
+                    &lt;!-- Optional configuration to skip the entire goal. Default: false --&gt;
+                    &lt;skip&gt;false&lt;/skip&gt;
+
+                    &lt;!-- Optional configuration to fail if values for template are missing. Default: true --&gt;
+                    &lt;failOnMissingValues&gt;true&lt;/failOnMissingValues&gt;
+
+                    &lt;!-- Optional configuration to control if output files can be overwritten. Default: false --&gt;
+                    &lt;overwriteOutput&gt;false&lt;/overwriteOutput&gt;
+
+                    &lt;!--
+                    Mandatory configuration for resource set.
+                    A resource set is bundle of one or more resources which can be translated to a rendering job.
+                    It contains a template file path, one or more value files and an output file path.
+                    --&gt;
+                    &lt;resource&gt;
+                        &lt;templateFilePath&gt;/path/to/template.j2&lt;/templateFilePath&gt;
+                        &lt;valueFiles&gt;
+                            &lt;param&gt;/path/to/values/value1.json&lt;/param&gt;
+                            &lt;param&gt;/path/to/values/value2.json&lt;/param&gt;
+                        &lt;/valueFiles&gt;
+                        &lt;outputFilePath&gt;/path/to/my_config.txt&lt;/outputFilePath&gt;
+                    &lt;/resource&gt;
+                &lt;/resourceSet&gt;
+            &lt;/configuration&gt;
+        &lt;/plugin&gt;
+
+        ...
+    &lt;/plugins&gt;
+
+    ...</pre></div></section><section>
+<h3><a name="Rendering_resources_using_the_command-line"></a>Rendering resources using the command-line</h3>
+<p>Once the plugin is installed successfully and configured in <code>pom.xml</code>, it can be executed via command-line.</p>
+<p>To run the Jinja Maven Plugin, execute the command below:</p>
 <div class="source"><pre class="prettyprint">  mvn jinja:generate</pre></div>
 <p>where <code>jinja</code> refers to the plugin's alias, and <code>generate</code> refers to the plugin goal.</p>
-<p>You can also using this with other phases/goals like:</p>
+<p>The plugin can also be executed with other phases/goals like:</p>
 <div class="source"><pre class="prettyprint">  mvn clean jinja:generate</pre></div>
-<p>This plugin automatically runs during a build as it gets executed in the <code>generate-resources</code> phase.</p></section></section>
+<p>If the plugin is configured with <code> &lt;skip&gt;false&lt;/skip&gt; </code>, then this plugin will automatically run during a build as it gets executed in the <code>generate-resources</code> phase.</p></section></section>
         </main>
       </div>
     </div>
