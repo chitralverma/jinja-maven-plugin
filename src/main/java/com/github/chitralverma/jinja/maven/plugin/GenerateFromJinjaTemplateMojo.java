@@ -84,7 +84,7 @@ public class GenerateFromJinjaTemplateMojo extends AbstractMojo {
    * resources which can be translated to a rendering job. It contains a
    * template file path, one or more value files and an output file path.
    */
-  @Parameter
+  @Parameter(required = true)
   private final List<ResourceBean> resourceSet = Collections.emptyList();
 
   /**

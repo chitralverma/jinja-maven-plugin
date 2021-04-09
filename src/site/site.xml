@@ -30,7 +30,7 @@
     <body>
         <menu name="Overview">
             <item name="Introduction" href="index.html"/>
-            <item name="Usage" href="usage.html"/>
+            <item name="Installation and Usage" href="usage.html"/>
             <item name="Configure Plugin" href="configure.html"/>
             <item name="Source" href="scm.html"/>
             <item name="License" href="licenses.html"/>

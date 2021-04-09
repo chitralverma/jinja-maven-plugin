@@ -15,7 +15,7 @@
 ~~ NOTE: For help with the syntax of this file, see:
 ~~ http://maven.apache.org/doxia/references/apt-format.html
 
-Usage
+Installation and Usage
 
   The Jinja Maven Plugin attempts to render concrete resources using
   Jinja templating engine during project build time.
@@ -33,10 +33,100 @@ Usage
   This plugin uses jinjava, see
   {{{https://github.com/HubSpot/jinjava#jinjava}this link}} for more info.
 
-* Cleaning a Maven project using the command-line
+* Installation
 
-  This plugin can be called to execute in the command-line once it has been
-  configured in the <<<pom.xml>>>. To run the Jinja Maven Plugin, you use:
+  Include the below mentioned <<<pluginRepository>>> in your Maven project
+  to get the latest snapshot of the plugin (based on defined plugin version):
+
++-----
+    ...
+
+    <pluginRepositories>
+        ...
+
+        <pluginRepository>
+            <id>ossrh</id>
+            <name>Central Repository OSSRH - Snapshots</name>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </pluginRepository>
+
+        ...
+    </pluginRepositories>
+
+    ...
++-----
+
+  To get the releases instead, include the <<<pluginRepository>>> below:
+
++-----
+    ...
+
+    <pluginRepositories>
+        ...
+
+        <pluginRepository>
+             <id>ossrh</id>
+             <name>Central Repository OSSRH - Releases</name>
+             <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </pluginRepository>
+
+        ...
+    </pluginRepositories>
+
+    ...
++-----
+
+  Once the repository is included add the below plugin to your project:
+
++-----
+    ...
+
+    <plugins>
+        ...
+
+        <plugin>
+            <groupId>com.github.chitralverma</groupId>
+            <artifactId>jinja-maven-plugin</artifactId>
+            <version>${latest.plugin.version}</version>
+            <configuration>
+                <resourceSet>
+                    <!-- Optional configuration to skip the entire goal. Default: false -->
+                    <skip>false</skip>
+
+                    <!-- Optional configuration to fail if values for template are missing. Default: true -->
+                    <failOnMissingValues>true</failOnMissingValues>
+
+                    <!-- Optional configuration to control if output files can be overwritten. Default: false -->
+                    <overwriteOutput>false</overwriteOutput>
+
+                    <!-- Required configuration for resource set.
+                    A resource set is bundle of one or more resources which can be translated to a rendering job.
+                    It contains a template file path, one or more value files and an output file path.
+                    -->
+                    <resource>
+                        <templateFilePath>/path/to/template.j2</templateFilePath>
+                        <valueFiles>
+                            <param>/path/to/values/value1.json</param>
+                            <param>/path/to/values/value2.json</param>
+                        </valueFiles>
+                        <outputFilePath>/path/to/my_config.txt</outputFilePath>
+                    </resource>
+                </resourceSet>
+            </configuration>
+        </plugin>
+
+        ...
+    </plugins>
+
+    ...
++-----
+
+* Rendering resources using the command-line
+
+  Once the plugin is installed successfully and configured in <<<pom.xml>>>,
+  it can be executed via command-line.
+
+  To run the Jinja Maven Plugin, execute the command below:
 
 +-----
   mvn jinja:generate
@@ -45,11 +135,12 @@ Usage
   where <<<jinja>>> refers to the plugin's alias, and <<<generate>>> refers
   to the plugin goal.
 
-  You can also using this with other phases/goals like:
+  The plugin can also be executed with other phases/goals like:
 
 +-----
   mvn clean jinja:generate
 +-----
 
-  This plugin automatically runs during a build as it gets executed in the
+  If the plugin is configured with <<<<skip>false</skip> >>>, then this plugin
+  will automatically execute during a build as it gets triggered in the
   <<<generate-resources>>> phase.
