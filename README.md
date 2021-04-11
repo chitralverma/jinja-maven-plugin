@@ -2,9 +2,7 @@ jinja-maven-plugin
 ====================
 [Apache Maven](http://maven.apache.org) plugin to automatically render concrete
 resources using [Jinja](https://jinja.palletsprojects.com/en/2.11.x/)
-templating engine during project build time.
-
-For more details visit the
+templating engine during project build time. For more details visit the
 [project webpage](https://chitralverma.github.io/jinja-maven-plugin/).
 
 ![Plugin Workflow](src/site/resources/images/plugin-workflow.png)
@@ -22,8 +20,8 @@ This project has the following requirements,
 ## Quick Links
 
 - [Installation and Usage](https://chitralverma.github.io/jinja-maven-plugin/usage.html)
-- [Configure Plugin](https://chitralverma.github.io/jinja-maven-plugin/configuration.html)
-- [Examples]() -- TODO
+- [Configuration](https://chitralverma.github.io/jinja-maven-plugin/configuration.html)
+- [Examples](https://chitralverma.github.io/jinja-maven-plugin/examples.html)
 - [Goal Details](https://chitralverma.github.io/jinja-maven-plugin/generate-mojo.html)
 - [Javadoc](https://chitralverma.github.io/jinja-maven-plugin/apidocs/index.html)
 

@@ -38,8 +38,7 @@ ${project.name}
 * Installation and Usage
 
   General instructions on how to install and use this plugin can be found in the
-  {{{./usage.html#gettingstarted}installation and usage guide}}. Some more
-  specific use cases are described in the Examples section of navigation.
+  {{{./usage.html}installation and usage guide}}.
 
   In case you still have questions regarding the plugin's usage, please feel
   free to contact us by raising an issue via the link available on our
@@ -60,6 +59,8 @@ ${project.name}
 
 * Examples
 
-  In Progress
+  Some specific use cases are described in the {{{./examples.html}examples section}}
+  or side navigation. Resources for these examples can be found at
+  {{{${project.scm.url}/examples/src/main/resources}this link}}.
 
   []

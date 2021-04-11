@@ -1,0 +1,16 @@
+server:
+  ports: [4000,4001,4002]
+  context-path: /v1
+config:
+  app:
+    name: ComplexApp
+  task:
+    scheduling:
+      pool:
+        size: 7
+  datasource:
+    driverClassName: com.mysql.jdbc.Driver
+    url: jdbc:mysql://1.2.3.4:3306/
+    username: db_user_uat
+    password: Password_uat_1234
+    options: {"prepStmtCacheSize":250,"cachePrepStmts":true}

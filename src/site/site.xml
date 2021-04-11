@@ -42,7 +42,11 @@
             <item name="Usage" href="usage.html#Usage"/>
         </menu>
 
-        <menu name="Examples"/>
+        <menu name="Examples">
+            <item name="Simple Substitution" href="examples.html#Simple_Substitution"/>
+            <item name="Complex Case" href="examples.html#Complex_Substitutions_and_Statements"/>
+            <item name="Rendering Profiles" href="examples.html#Rendering_Profiles"/>
+        </menu>
 
         <menu ref="reports"/>
 

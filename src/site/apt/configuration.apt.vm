@@ -63,6 +63,8 @@ Configuration
 
         * Human readable and popular
 
+    <Note:> Keys in the value JSON files must not contain <<<.>>> character.
+
     <<Examples:>>
 
 +-----

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>jinja-maven-plugin</artifactId>
+        <groupId>com.github.chitralverma</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>examples</artifactId>
+
+    <pluginRepositories>
+
+        <pluginRepository>
+            <id>ossrh</id>
+            <name>Central Repository OSSRH - Snapshots</name>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </pluginRepository>
+
+    </pluginRepositories>
+
+    <build>
+        <plugins>
+
+            <plugin>
+                <groupId>com.github.chitralverma</groupId>
+                <artifactId>jinja-maven-plugin</artifactId>
+                <version>${project.version}</version>
+                <configuration>
+                    <skip>false</skip>
+                    <failOnMissingValues>true</failOnMissingValues>
+                    <overwriteOutput>true</overwriteOutput>
+                    <resourceSet>
+                        <resource>
+                            <templateFilePath>
+                                src/main/resources/templates/simple_template.j2
+                            </templateFilePath>
+                            <valueFiles>
+                                <param>
+                                    src/main/resources/values/simple/simple_values_uat.json
+                                </param>
+                            </valueFiles>
+                            <outputFilePath>
+                                src/main/resources/outputs/simple_config.json
+                            </outputFilePath>
+                        </resource>
+
+                        <resource>
+                            <templateFilePath>
+                                src/main/resources/templates/yaml_complex_template.yml
+                            </templateFilePath>
+                            <valueFiles>
+                                <param>
+                                    src/main/resources/values/yaml_complex/values_commons.json
+                                </param>
+                                <param>
+                                    src/main/resources/values/yaml_complex/complex_values_uat.json
+                                </param>
+                            </valueFiles>
+                            <outputFilePath>
+                                src/main/resources/outputs/complex_config.yml
+                            </outputFilePath>
+                        </resource>
+                    </resourceSet>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+
+        </plugins>
+    </build>
+
+</project>

@@ -235,14 +235,16 @@ public class GenerateFromJinjaTemplateMojo extends AbstractMojo {
       throw new MojoFailureException(
           "Error occurred during configuration validation.",
           new IllegalArgumentException(
-              String.format("'%s' path '%s' must exist.", key, file)));
+              String.format(
+                  "Provided %s at location '%s' does not exist.", key, file)));
     }
 
     if (!file.isFile()) {
       throw new MojoFailureException(
           "Error occurred during configuration validation.",
           new IllegalArgumentException(
-              String.format("'%s' path '%s' must be a file.", key, file)));
+              String.format(
+                  "Provided %s at location '%s' must be a file.", key, file)));
     }
   }
 

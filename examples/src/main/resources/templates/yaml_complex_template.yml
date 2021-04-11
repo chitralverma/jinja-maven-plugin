@@ -1,0 +1,16 @@
+server:
+  ports: {{serverPorts}}
+  context-path: {{contextPath}}
+config:
+  app:
+    name: {{name}}
+  task:
+    scheduling:
+      pool:
+        size: {{poolSize}}
+  datasource:
+    driverClassName: {{dbDriverClass}}
+    url: {{connectString}}
+    username: {{dbUserName}}
+    password: {{dbPassword}}
+    options: {{sourceOptions}}

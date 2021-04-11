@@ -259,13 +259,16 @@
                     </includeTestSourceDirectory>
                     <sourceDirectories>
                         <directory>${basedir}/src/main/java</directory>
-                        <directory>${basedir}/src/main/scala</directory>
                     </sourceDirectories>
                     <testSourceDirectories>
                         <directory>${basedir}/src/test/java</directory>
-                        <directory>${basedir}/src/test/scala</directory>
                     </testSourceDirectories>
-                    <configLocation>dev/checkstyle.xml</configLocation>
+                    <configLocation>
+                        ${basedir}/dev/checkstyle.xml
+                    </configLocation>
+                    <suppressionsLocation>
+                        ${basedir}/dev/checkstyle-suppressions.xml
+                    </suppressionsLocation>
                     <outputFile>
                         ${basedir}/target/checkstyle-output.xml
                     </outputFile>

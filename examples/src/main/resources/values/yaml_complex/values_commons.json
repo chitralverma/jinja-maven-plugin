@@ -1,0 +1,14 @@
+{
+  "name": "ComplexApp",
+  "contextPath": "/v1",
+  "poolSize": 7,
+  "dbDriverClass": "com.mysql.jdbc.Driver",
+  "mysql": "mysql",
+  "db2": "db2",
+  "dbType": "{% if 'mysql' in dbDriverClass %}mysql{% else %}db2{% endif %}",
+  "connectString": "jdbc:{{dbType}}://{{db_host}}:{{db_port}}/",
+  "sourceOptions": {
+    "prepStmtCacheSize": 250,
+    "cachePrepStmts": true
+  }
+}
