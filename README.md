@@ -5,7 +5,12 @@ resources using [Jinja](https://jinja.palletsprojects.com/en/2.11.x/)
 templating engine during project build time.
 
 For more details visit the
-[project webpage](https://chitralverma.github.io/jinja-maven-plugin).
+[project webpage](https://chitralverma.github.io/jinja-maven-plugin/).
+
+![Plugin Workflow](src/site/resources/images/plugin-workflow.png)
+
+This plugin uses jinjava,
+see [this link](https://github.com/HubSpot/jinjava#jinjava) for more info.
 
 ## Requirements
 
@@ -17,12 +22,10 @@ This project has the following requirements,
 ## Quick Links
 
 - [Installation and Usage](https://chitralverma.github.io/jinja-maven-plugin/usage.html)
-- [Configure Plugin](https://chitralverma.github.io/jinja-maven-plugin/configure.html)
-  -- TODO
+- [Configure Plugin](https://chitralverma.github.io/jinja-maven-plugin/configuration.html)
 - [Examples]() -- TODO
 - [Goal Details](https://chitralverma.github.io/jinja-maven-plugin/generate-mojo.html)
 - [Javadoc](https://chitralverma.github.io/jinja-maven-plugin/apidocs/index.html)
-- [Credits](https://chitralverma.github.io/jinja-maven-plugin/team.html)
 
 ## Build from Source
 

@@ -180,6 +180,22 @@
                     <show>private</show>
                     <nohelp>true</nohelp>
                 </configuration>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>javadoc</report>
+                            <report>test-javadoc</report>
+                        </reports>
+                    </reportSet>
+                    <reportSet>
+                        <id>aggregate</id>
+                        <inherited>false
+                        </inherited>
+                        <reports>
+                            <report>aggregate</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
             </plugin>
 
             <plugin>
@@ -215,8 +231,6 @@
                         <configuration>
                             <includeStale>false</includeStale>
                             <style>GOOGLE</style>
-                            <formatMain>true</formatMain>
-                            <formatTest>true</formatTest>
                             <filterModified>false</filterModified>
                             <skip>false</skip>
                             <fixImports>true</fixImports>

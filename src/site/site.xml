@@ -30,17 +30,31 @@
     <body>
         <menu name="Overview">
             <item name="Introduction" href="index.html"/>
-            <item name="Installation and Usage" href="usage.html"/>
-            <item name="Configure Plugin" href="configure.html"/>
-            <item name="Source" href="scm.html"/>
+            <item name="Goals" href="generate-mojo.html"/>
+            <item name="Github" target="_blank"
+                  href="https://www.github.com/chitralverma/jinja-maven-plugin/"/>
             <item name="License" href="licenses.html"/>
         </menu>
 
-        <menu ref="reports"/>
+        <menu name="Guides">
+            <item name="Installation" href="usage.html#Installation"/>
+            <item name="Configuration" href="configuration.html"/>
+            <item name="Usage" href="usage.html#Usage"/>
+        </menu>
 
         <menu name="Examples"/>
 
-        <footer><![CDATA[Copyright © 2021 Chitral Verma. All rights reserved.]]>
+        <menu ref="reports"/>
+
+        <footer>
+            <![CDATA[
+            <script type="text/javascript">
+             $(document).ready(function () {
+               var txt1 = "<p style='text-align:center'>Copyright © 2021 Chitral Verma. All rights reserved.</p>";
+               $("body").append(txt1);
+            });
+            </script>
+            ]]>
         </footer>
     </body>
 

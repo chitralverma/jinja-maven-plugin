@@ -22,7 +22,9 @@ ${project.name}
 
 * Goals Overview
 
-  The Jinja Maven Plugin has only one goal.
+  The Jinja Maven Plugin has only one goal. See
+  {{{./images/plugin-workflow.png}this diagram}} for a visual understanding
+  of the process.
 
   * {{{./generate-mojo.html}jinja:generate}} attempts to renders concrete
   resources from Jinja template files as part of Maven build process based on
@@ -31,13 +33,13 @@ ${project.name}
 * Configure Plugin
 
   Details of plugin configuration (resource and resourceSet) are available at
-  {{{./configure.html}this link}}.
+  {{{./configuration.html}this link}}.
 
-* Usage
+* Installation and Usage
 
-  General instructions on how to use the Jinja Maven Plugin can be found on the
-  {{{./usage.html}usage page}} and some more specific use cases are described
-  in the Examples section of navigation.
+  General instructions on how to install and use this plugin can be found in the
+  {{{./usage.html#gettingstarted}installation and usage guide}}. Some more
+  specific use cases are described in the Examples section of navigation.
 
   In case you still have questions regarding the plugin's usage, please feel
   free to contact us by raising an issue via the link available on our

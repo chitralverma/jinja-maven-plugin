@@ -15,7 +15,7 @@
 ~~ NOTE: For help with the syntax of this file, see:
 ~~ http://maven.apache.org/doxia/references/apt-format.html
 
-Installation and Usage
+{{{gettingstarted}Installation and Usage}}
 
   The Jinja Maven Plugin attempts to render concrete resources using
   Jinja templating engine during project build time.
@@ -28,12 +28,9 @@ Installation and Usage
   more resources as part of a <<<resourceSet>>>.
 
   Details of plugin configuration (resource and resourceSet) are available at
-  {{{./configure.html}this link}}.
+  {{{./configuration.html}this link}}.
 
-  This plugin uses jinjava, see
-  {{{https://github.com/HubSpot/jinjava#jinjava}this link}} for more info.
-
-* Installation
+* {Installation}
 
   Include the below mentioned <<<pluginRepository>>> in your Maven project
   to get the latest snapshot of the plugin (based on defined plugin version):
@@ -89,27 +86,27 @@ Installation and Usage
             <artifactId>jinja-maven-plugin</artifactId>
             <version>${latest.plugin.version}</version>
             <configuration>
+                <!-- Optional configuration to skip the entire goal. Default: false -->
+                <skip>false</skip>
+
+                <!-- Optional configuration to fail if values for template are missing. Default: true -->
+                <failOnMissingValues>true</failOnMissingValues>
+
+                <!-- Optional configuration to control if output files can be overwritten. Default: false -->
+                <overwriteOutput>false</overwriteOutput>
+
+                <!-- Required configuration for resource set.
+                A resource set is bundle of one or more resources which can be translated to a rendering job.
+                It contains a template file path, one or more value files and an output file path.
+                -->
                 <resourceSet>
-                    <!-- Optional configuration to skip the entire goal. Default: false -->
-                    <skip>false</skip>
-
-                    <!-- Optional configuration to fail if values for template are missing. Default: true -->
-                    <failOnMissingValues>true</failOnMissingValues>
-
-                    <!-- Optional configuration to control if output files can be overwritten. Default: false -->
-                    <overwriteOutput>false</overwriteOutput>
-
-                    <!-- Required configuration for resource set.
-                    A resource set is bundle of one or more resources which can be translated to a rendering job.
-                    It contains a template file path, one or more value files and an output file path.
-                    -->
                     <resource>
-                        <templateFilePath>/path/to/template.j2</templateFilePath>
+                        <templateFilePath>/path/to/template/a_template.j2</templateFilePath>
                         <valueFiles>
-                            <param>/path/to/values/value1.json</param>
-                            <param>/path/to/values/value2.json</param>
+                            <param>/path/to/values/value_1.json</param>
+                            <param>/path/to/values/value_2.json</param>
                         </valueFiles>
-                        <outputFilePath>/path/to/my_config.txt</outputFilePath>
+                        <outputFilePath>src/main/resources/jinja/results/config.json</outputFilePath>
                     </resource>
                 </resourceSet>
             </configuration>
@@ -121,7 +118,17 @@ Installation and Usage
     ...
 +-----
 
-* Rendering resources using the command-line
+* {Usage}
+
+** Requirements
+
+  This project has the following requirements,
+
+    * JDK 8
+
+    * Maven 3.3 and above
+
+** Manually rendering resources using the command-line
 
   Once the plugin is installed successfully and configured in <<<pom.xml>>>,
   it can be executed via command-line.
@@ -141,6 +148,73 @@ Installation and Usage
   mvn clean jinja:generate
 +-----
 
-  If the plugin is configured with <<<<skip>false</skip> >>>, then this plugin
-  will automatically execute during a build as it gets triggered in the
-  <<<generate-resources>>> phase.
+** Automatically rendering resources at build time
+
+  To automatically execute the plugin at build time, add an execution to the
+  plugin:
+
++-----
+    ...
+
+    <plugins>
+        ...
+
+        <plugin>
+            <groupId>com.github.chitralverma</groupId>
+            <artifactId>jinja-maven-plugin</artifactId>
+            <version>${latest.plugin.version}</version>
+            <configuration>
+                ...
+            </configuration>
+            <executions>
+                <execution>
+                    <phase>process-resources</phase>
+                    <goals>
+                        <goal>generate</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
+
+        ...
+    </plugins>
+
+    ...
++-----
+
+  Once the above execution is added, the configured resources will rendered at
+  build time automatically. For example when <<<compile>>>, <<<package>>>, and
+  other phases are executed:
+
++-----
+  mvn clean package
++-----
+
+  <Note>: Ensure that the plugin is configured with <<<<skip>false</skip\>>>>,
+   otherwise the execution will be skipped.
+
+** Build this plugin from source
+
+  To build this project from source, run the commands below,
+
++-----
+  # Clone project to current working directory
+  git clone https://github.com/chitralverma/jinja-maven-plugin.git
++-----
+
++-----
+  # Clone project to current working directory
+  git clone https://github.com/chitralverma/jinja-maven-plugin.git
++-----
+
++-----
+  # Change directory to cloned project root
+  cd jinja-maven-plugin
++-----
+
++-----
+  # Build project
+  mvn clean install
++-----
+
+[]
