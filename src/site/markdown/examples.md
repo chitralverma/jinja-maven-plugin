@@ -223,7 +223,7 @@ rendered.
   {
     "name": "SimpleApp",
     "version": 1.0,
-    "env": "uat",
+    "env": "prod",
     "db_host": "1.2.3.4",
     "db_port": 9876,
     "db": "jdbc:mysql://{{db_host}}:{{db_port}}/"
@@ -329,13 +329,7 @@ rendered.
 
 * **Execution:**
     * Going back to scenario (i) - Rendering everything in one pass - this can
-      be achieved by either running the command below,
-
-      ```commandline
-      # For UAT and PROD environment
-      mvn clean package -Duat_build -Dprod_build
-      ```
-      or you can remove the separate maven profiles altogether and create two
+      be achieved by removing the maven profiles altogether and create two
       separate resource in the plugin directly, like below,
 
       ```xml
@@ -392,7 +386,7 @@ rendered.
 
     * As for the scenario (ii) - Rendering selectively by triggers - this can be
       achieved by running either of the below mentioned commands as per the
-      requirement,
+      requirement. See Plugin configuration section above.
 
       ```commandline
       # For UAT environment
@@ -421,7 +415,7 @@ rendered.
   {
     "app_name": "SimpleApp",
     "app_version": 1.0,
-    "env_name": "uat",
+    "env_name": "prod",
     "db_connect": "jdbc:mysql://1.2.3.4:9876/"
   }
   ```

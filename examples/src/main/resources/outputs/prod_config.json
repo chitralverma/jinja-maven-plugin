@@ -1,0 +1,6 @@
+{
+"app_name" : "SimpleApp",
+"app_version" : 1.0,
+"env_name" : "prod",
+"db_connect" : "jdbc:mysql://1.2.3.4:9876/"
+}

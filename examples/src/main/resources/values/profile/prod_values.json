@@ -1,0 +1,8 @@
+{
+  "name": "SimpleApp",
+  "version": 1.0,
+  "env": "prod",
+  "db_host": "1.2.3.4",
+  "db_port": 9876,
+  "db": "jdbc:mysql://{{db_host}}:{{db_port}}/"
+}
