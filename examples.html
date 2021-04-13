@@ -429,15 +429,8 @@ config:
 <p><b>Execution:</b></p>
 <ul>
 
-<li>Going back to scenario (i) - Rendering everything in one pass - this can be achieved by either running the command below,</li>
+<li>Going back to scenario (i) - Rendering everything in one pass - this can be achieved by removing the maven profiles altogether and create two separate resource in the plugin directly, like below,</li>
 </ul>
-
-<div class="source">
-<div class="source"><pre class="prettyprint"># For UAT and PROD environment
-mvn clean package -Duat_build -Dprod_build
-</pre></div></div>
-
-<p>or you can remove the separate maven profiles altogether and create two separate resource in the plugin directly, like below,</p>
 
 <div class="source">
 <div class="source"><pre class="prettyprint">&lt;project&gt;
@@ -493,7 +486,7 @@ mvn clean package -Duat_build -Dprod_build
 
 <ul>
 
-<li>As for the scenario (ii) - Rendering selectively by triggers - this can be achieved by running either of the below mentioned commands as per the requirement,</li>
+<li>As for the scenario (ii) - Rendering selectively by triggers - this can be achieved by running either of the below mentioned commands as per the requirement. See Plugin configuration section above.</li>
 </ul>
 
 <div class="source">
