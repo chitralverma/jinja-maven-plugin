@@ -318,7 +318,7 @@ config:
 <div class="source"><pre class="prettyprint">{
   &quot;name&quot;: &quot;SimpleApp&quot;,
   &quot;version&quot;: 1.0,
-  &quot;env&quot;: &quot;uat&quot;,
+  &quot;env&quot;: &quot;prod&quot;,
   &quot;db_host&quot;: &quot;1.2.3.4&quot;,
   &quot;db_port&quot;: 9876,
   &quot;db&quot;: &quot;jdbc:mysql://{{db_host}}:{{db_port}}/&quot;
@@ -526,7 +526,7 @@ mvn clean package -Dprod_build
 <div class="source"><pre class="prettyprint">{
   &quot;app_name&quot;: &quot;SimpleApp&quot;,
   &quot;app_version&quot;: 1.0,
-  &quot;env_name&quot;: &quot;uat&quot;,
+  &quot;env_name&quot;: &quot;prod&quot;,
   &quot;db_connect&quot;: &quot;jdbc:mysql://1.2.3.4:9876/&quot;
 }
 </pre></div></div></section>
