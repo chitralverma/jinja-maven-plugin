@@ -179,14 +179,249 @@ rendered.
   different and specific to the environment they are running in. Consider the
   following scenarios that may rise,
 
-    * Rendering everything in one pass: When you want all outputs to be rendered
-      at the same time. Like, rendering the configuration for all
-      environments (`uat` and `prod`) at the same time.
-    * Rendering by triggers: When you want to conditionally render selected
-      outputs. Like, rendering when certain condition(s) are met.
+    1. Rendering everything in one pass: When you want all outputs to be
+       rendered at the same time. Like, rendering the configuration for all
+       environments (`uat` and `prod`) at the same time.
+    2. Rendering selectively by triggers: When you want to conditionally render
+       selected outputs. Like, rendering when certain condition(s) are met.
 
-  In such scenarios, this plugin can be coupled with maven profiles to
+  For such scenarios, this plugin can be coupled with maven profiles to
   selectively render resources.
+
+
+* **Template File:**
+
+  `/path/to/template/a_template.j2`
+
+  ```json
+  {
+    "app_name": "{{name}}",
+    "app_version": {{version}},
+    "env_name": "{{env}}",
+    "db_connect": "{{db}}"
+  }
+  ```
+
+* **Value Files:**
+
+  `/path/to/values/uat_values.json`
+
+  ```json
+  {
+    "name": "SimpleApp",
+    "version": 1.0,
+    "env": "uat",
+    "db_host": "localhost",
+    "db_port": 1234,
+    "db": "jdbc:mysql://{{db_host}}:{{db_port}}/"
+  }
+  ```
+
+  `/path/to/values/prod_values.json`
+
+  ```json
+  {
+    "name": "SimpleApp",
+    "version": 1.0,
+    "env": "uat",
+    "db_host": "1.2.3.4",
+    "db_port": 9876,
+    "db": "jdbc:mysql://{{db_host}}:{{db_port}}/"
+  }
+  ```
+
+* **Plugin configuration:** The project's `pom.xml` can look something like
+  below, with two different maven profiles `uat_build` and `prod_build`. They
+  both use the same template, but the value file path and output file paths can
+  be switched as per the activated profile.
+
+  ```xml
+  <project>
+      ...
+      <profiles>
+          ...
+          <profile>
+              <!-- Profile for UAT Environment -->
+              <id>uat_build</id>
+              <activation>
+                  <property>
+                      <name>uat_build</name>
+                  </property>
+              </activation>
   
+              ...
   
-  _Example Pending_
+              <build>
+                  <plugins>
+                      ...
+          
+                      <plugin>
+                          <groupId>com.github.chitralverma</groupId>
+                          <artifactId>jinja-maven-plugin</artifactId>
+                          <version>${latest.plugin.version}</version>
+                          <configuration>
+                              <skip>false</skip>
+                              <failOnMissingValues>true</failOnMissingValues>
+                              <overwriteOutput>false</overwriteOutput>
+                              <resourceSet>
+                                  <resource>
+                                      <templateFilePath>/path/to/template/a_template.j2</templateFilePath>
+                                      <valueFiles>
+                                          <param>/path/to/values/uat_values.json</param>
+                                      </valueFiles>
+                                      <outputFilePath>src/main/resources/jinja/results/uat_config.json</outputFilePath>
+                                  </resource>
+                              </resourceSet>
+                          </configuration>
+                      </plugin>
+
+                      ...
+                  </plugins>
+              </build>
+          </profile>
+  
+          <profile>
+              <!-- Profile for PROD Environment -->
+              <id>prod_build</id>
+              <activation>
+                  <property>
+                      <name>prod_build</name>
+                  </property>
+              </activation>
+  
+              ...
+  
+              <build>
+                  <plugins>
+                      ...
+          
+                      <plugin>
+                          <groupId>com.github.chitralverma</groupId>
+                          <artifactId>jinja-maven-plugin</artifactId>
+                          <version>${latest.plugin.version}</version>
+                          <configuration>
+                              <skip>false</skip>
+                              <failOnMissingValues>true</failOnMissingValues>
+                              <overwriteOutput>false</overwriteOutput>
+                              <resourceSet>
+                                  <resource>
+                                      <templateFilePath>/path/to/template/a_template.j2</templateFilePath>
+                                      <valueFiles>
+                                          <param>/path/to/values/prod_values.json</param>
+                                      </valueFiles>
+                                      <outputFilePath>src/main/resources/jinja/results/prod_config.json</outputFilePath>
+                                  </resource>
+                              </resourceSet>
+                          </configuration>
+                      </plugin>
+
+                      ...
+                  </plugins>
+              </build>
+          </profile>
+  
+          ...
+      </profiles>
+  
+      ...
+  </project>
+  ```
+
+* **Execution:**
+    * Going back to scenario (i) - Rendering everything in one pass - this can
+      be achieved by either running the command below,
+
+      ```commandline
+      # For UAT and PROD environment
+      mvn clean package -Duat_build -Dprod_build
+      ```
+      or you can remove the separate maven profiles altogether and create two
+      separate resource in the plugin directly, like below,
+
+      ```xml
+      <project>
+          ...
+          
+              <build>
+                  ...
+        
+                  <plugins>
+                      ...
+          
+                      <plugin>
+                          <groupId>com.github.chitralverma</groupId>
+                          <artifactId>jinja-maven-plugin</artifactId>
+                          <version>${latest.plugin.version}</version>
+                          <configuration>
+                              <skip>false</skip>
+                              <failOnMissingValues>true</failOnMissingValues>
+                              <overwriteOutput>false</overwriteOutput>
+                              <resourceSet>
+      
+                                  <!-- Profile for UAT Environment -->
+                                  <resource>
+                                      <templateFilePath>/path/to/template/a_template.j2</templateFilePath>
+                                      <valueFiles>
+                                          <param>/path/to/values/uat_values.json</param>
+                                      </valueFiles>
+                                      <outputFilePath>src/main/resources/jinja/results/uat_config.json</outputFilePath>
+                                  </resource>
+                                    
+                                  <!-- Profile for PROD Environment -->
+                                  <resource>
+                                      <templateFilePath>/path/to/template/a_template.j2</templateFilePath>
+                                      <valueFiles>
+                                          <param>/path/to/values/prod_values.json</param>
+                                      </valueFiles>
+                                      <outputFilePath>src/main/resources/jinja/results/prod_config.json</outputFilePath>
+                                  </resource>
+      
+                              </resourceSet>
+                          </configuration>
+                      </plugin>
+        
+                      ...
+                  </plugins>
+                
+                  ...
+              </build>
+      
+          ...
+      </project>
+      ```
+
+    * As for the scenario (ii) - Rendering selectively by triggers - this can be
+      achieved by running either of the below mentioned commands as per the
+      requirement,
+
+      ```commandline
+      # For UAT environment
+      mvn clean package -Duat_build
+      
+      # For PROD environment
+      mvn clean package -Dprod_build
+      ```
+
+* **Output Files:**
+
+  `src/main/resources/jinja/results/uat_config.json`
+
+  ```json
+  {
+    "app_name": "SimpleApp",
+    "app_version": 1.0,
+    "env_name": "uat",
+    "db_connect": "jdbc:mysql://localhost:1234/"
+  }
+  ```
+
+  `src/main/resources/jinja/results/prod_config.json`
+
+  ```json
+  {
+    "app_name": "SimpleApp",
+    "app_version": 1.0,
+    "env_name": "uat",
+    "db_connect": "jdbc:mysql://1.2.3.4:9876/"
+  }
+  ```
