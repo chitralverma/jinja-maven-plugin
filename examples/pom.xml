@@ -59,6 +59,11 @@
                             <outputFilePath>
                                 src/main/resources/outputs/complex_config.yml
                             </outputFilePath>
+                            <dependencyDirs>
+                                <param>
+                                    src/main/resources/templates/
+                                </param>
+                            </dependencyDirs>
                         </resource>
                     </resourceSet>
                 </configuration>
@@ -68,25 +73,6 @@
                         <goals>
                             <goal>generate</goal>
                         </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <artifactId>maven-checkstyle-plugin</artifactId>
-                <configuration>
-                    <skip>true</skip>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <version>3.0.0-M1</version>
-                <executions>
-                    <execution>
-                        <id>default-deploy</id>
-                        <phase>none</phase>
                     </execution>
                 </executions>
             </plugin>

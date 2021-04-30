@@ -14,3 +14,7 @@ config:
     username: db_user_uat
     password: Password_uat_1234
     options: {"prepStmtCacheSize":250,"cachePrepStmts":true}
+
+logger:
+  pattern: "%-5p [%t]: %m%n"
+  a.b.c: OFF

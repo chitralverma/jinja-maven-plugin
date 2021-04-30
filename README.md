@@ -46,6 +46,11 @@ mvn clean install
 
 _**Note:** Maven 3.3+ and Git are required to build project from source._
 
+## Upcoming Features
+
+* Dry Run
+* Wildcard support for value file paths
+
 ## Contributing
 
 I'm interested in building a community and would welcome any thoughts/
