@@ -26,11 +26,17 @@ import com.fasterxml.jackson.databind.node.BooleanNode;
 import com.fasterxml.jackson.databind.node.JsonNodeType;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.POJONode;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.hubspot.jinjava.Jinjava;
 import com.hubspot.jinjava.JinjavaConfig;
 import com.hubspot.jinjava.interpret.RenderResult;
+import com.hubspot.jinjava.loader.CascadingResourceLocator;
+import com.hubspot.jinjava.loader.ClasspathResourceLocator;
+import com.hubspot.jinjava.loader.FileLocator;
+import com.hubspot.jinjava.loader.ResourceLocator;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
@@ -213,6 +219,7 @@ public class GenerateFromJinjaTemplateMojo extends AbstractMojo {
     }
 
     validateOutputFile(resource.getOutputFilePath());
+    validateDependencies(resource.getDependencyDirs());
   }
 
   /**
@@ -288,6 +295,47 @@ public class GenerateFromJinjaTemplateMojo extends AbstractMojo {
   }
 
   /**
+   * Validates path provided as one or more dependencies location.
+   *
+   * @param dirs Directories to be added to FileLocator.
+   * @throws MojoFailureException Validations errors result in
+   *     `MojoFailureException`
+   */
+  private void validateDependencies(List<File> dirs)
+      throws MojoFailureException {
+    if (dirs == null || dirs.isEmpty()) {
+      getLog().debug("No dependencies defined.");
+    } else {
+      for (File file : dirs) {
+        if (file == null) {
+          throw new MojoFailureException(
+              "Error occurred during configuration validation.",
+              new IllegalArgumentException(
+                  "'dependencyPath' path must not be null."));
+        }
+
+        if (!file.exists()) {
+          throw new MojoFailureException(
+              "Error occurred during configuration validation.",
+              new IllegalArgumentException(
+                  String.format(
+                      "Provided dependencyPath at location '%s' does not exist.",
+                      file)));
+        }
+
+        if (file.isFile()) {
+          throw new MojoFailureException(
+              "Error occurred during configuration validation.",
+              new IllegalArgumentException(
+                  String.format(
+                      "Provided dependencyPath at location '%s' must be a directory.",
+                      file)));
+        }
+      }
+    }
+  }
+
+  /**
    * Rendering logic using Jinjava.
    *
    * <p>Value file(s) are read as JSON Objects using jackson and all the nodes
@@ -311,6 +359,7 @@ public class GenerateFromJinjaTemplateMojo extends AbstractMojo {
             .withFailOnUnknownTokens(failOnMissingValues)
             .build();
     Jinjava jinjava = new Jinjava(jc);
+    addDependencyLocators(jinjava, resource.getDependencyDirs());
 
     Map<String, Object> context = Maps.newHashMap();
 
@@ -363,6 +412,34 @@ public class GenerateFromJinjaTemplateMojo extends AbstractMojo {
       throw new MojoExecutionException(
           "Error occurred during resource rendering.", e);
     }
+  }
+
+  /**
+   * Allows users locate external resource(s) like external templates to
+   * include/ extend/ import from local file system.
+   *
+   * @param jinjava Jinja context for Java
+   * @param dependencyDirs List of user provided dependency directories
+   * @throws MojoExecutionException Exceptions occurred while creation of
+   *     locators are wrapped as `MojoExecutionException`.
+   */
+  private void addDependencyLocators(Jinjava jinjava, List<File> dependencyDirs)
+      throws MojoExecutionException {
+    List<ResourceLocator> resourceLocatorsList = Lists.newArrayList();
+    resourceLocatorsList.add(new ClasspathResourceLocator());
+
+    for (File dir : dependencyDirs) {
+      try {
+        resourceLocatorsList.add(new FileLocator(dir));
+      } catch (FileNotFoundException e) {
+        throw new MojoExecutionException(
+            "Error occurred while creating resource locator.", e);
+      }
+    }
+
+    ResourceLocator[] resourceLocators =
+        resourceLocatorsList.toArray(new ResourceLocator[0]);
+    jinjava.setResourceLocator(new CascadingResourceLocator(resourceLocators));
   }
 
   /**

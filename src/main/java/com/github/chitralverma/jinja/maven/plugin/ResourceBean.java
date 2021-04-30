@@ -16,6 +16,7 @@
 
 package com.github.chitralverma.jinja.maven.plugin;
 
+import com.google.common.collect.Lists;
 import java.io.File;
 import java.io.Serializable;
 import java.util.List;
@@ -42,6 +43,12 @@ public class ResourceBean implements Serializable {
    */
   private File outputFilePath;
 
+  /**
+   * This is an optional field, and describes path to one or more directories
+   * which contains resources to be located. These directories must exist.
+   */
+  private List<File> dependencyDirs = Lists.newLinkedList();
+
   public File getTemplateFilePath() {
     return templateFilePath;
   }
@@ -66,6 +73,14 @@ public class ResourceBean implements Serializable {
     this.outputFilePath = outputFilePath;
   }
 
+  public List<File> getDependencyDirs() {
+    return dependencyDirs;
+  }
+
+  public void setDependencyDirs(List<File> dependencyDirs) {
+    this.dependencyDirs = dependencyDirs;
+  }
+
   @Override
   public String toString() {
     return "ResourceBean{"
@@ -75,6 +90,8 @@ public class ResourceBean implements Serializable {
         + valueFiles
         + ", outputFilePath="
         + outputFilePath
+        + ", dependenciesPath="
+        + dependencyDirs
         + '}';
   }
 }

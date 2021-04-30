@@ -38,13 +38,13 @@ Configuration
     <<Examples:>>
 
 +-----
-  <!-- Absolute Path -->
-  <templateFilePath>/path/to/template/a_template.j2</templateFilePath>
+<!-- Absolute Path -->
+<templateFilePath>/path/to/template/a_template.j2</templateFilePath>
 +-----
 
 +-----
-  <!-- Relative Path -->
-  <templateFilePath>src/main/resources/jinja/template/a_template.j2</templateFilePath>
+<!-- Relative Path -->
+<templateFilePath>src/main/resources/jinja/template/a_template.j2</templateFilePath>
 +-----
 
     * <<<valueFiles>>> : This is a collection of relative or absolute locations
@@ -68,10 +68,10 @@ Configuration
     <<Examples:>>
 
 +-----
-    <valueFiles>
-        <param>/path/to/values/value_1.json</param>
-        <param>/path/to/values/value_2.json</param>
-    </valueFiles>
+<valueFiles>
+    <param>/path/to/values/value_1.json</param>
+    <param>/path/to/values/value_2.json</param>
+</valueFiles>
 +-----
 
     * <<<outputFilePath>>> : As the name suggests, this describes a location
@@ -84,28 +84,46 @@ Configuration
     <<Examples:>>
 
 +-----
-  <!-- Relative Path -->
-  <outputFilePath>src/main/resources/jinja/results/config.json</outputFilePath>
+<!-- Relative Path -->
+<outputFilePath>src/main/resources/jinja/results/config.json</outputFilePath>
++-----
+
+    * <<<dependencyDirs>>> : This is a collection of relative or absolute
+    locations of one or more directories which contains resource files. These
+    resource files can be included/ imported/ extended in templates. This
+    configuration is not mandatory.
+
+    <<Examples:>>
+
++-----
+<dependencyDirs>
+    <param>\${project.basedir}/path/to/dir1/</param>
+    <param>/path/to/dir2/</param>
+</dependencyDirs>
 +-----
     []
 
-  Example of a complete resource:
+* Example of a complete resource:
 
 +-----
-    <resourceSet>
-        ...
+<resourceSet>
+    ...
 
-        <resource>
-            <templateFilePath>/path/to/template/a_template.j2</templateFilePath>
-            <valueFiles>
-                <param>/path/to/values/value_1.json</param>
-                <param>/path/to/values/value_2.json</param>
-            </valueFiles>
-            <outputFilePath>src/main/resources/jinja/results/config.json</outputFilePath>
-        </resource>
+    <resource>
+        <templateFilePath>/path/to/template/a_template.j2</templateFilePath>
+        <valueFiles>
+            <param>/path/to/values/value_1.json</param>
+            <param>/path/to/values/value_2.json</param>
+        </valueFiles>
+        <outputFilePath>src/main/resources/jinja/results/config.json</outputFilePath>
+        <dependencyDirs>
+            <param>\${project.basedir}/path/to/dir1/</param>
+            <param>/path/to/dir2/</param>
+        </dependencyDirs>
+    </resource>
 
-        ...
-    </resourceSet>
+    ...
+</resourceSet>
 +-----
 
 * Resource Set
