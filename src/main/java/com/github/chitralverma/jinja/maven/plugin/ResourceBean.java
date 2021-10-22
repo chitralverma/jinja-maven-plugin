@@ -29,6 +29,9 @@ import java.util.List;
  */
 public class ResourceBean implements Serializable {
 
+  /** Flag to include Maven project properties in context. */
+  private boolean includeMavenProperties = true;
+
   /** Path to a template file. This can be any text file. */
   private File templateFilePath;
 
@@ -81,16 +84,26 @@ public class ResourceBean implements Serializable {
     this.dependencyDirs = dependencyDirs;
   }
 
+  public boolean getIncludeMavenProperties() {
+    return includeMavenProperties;
+  }
+
+  public void setIncludeMavenProperties(boolean includeMavenProperties) {
+    this.includeMavenProperties = includeMavenProperties;
+  }
+
   @Override
   public String toString() {
     return "ResourceBean{"
-        + "templateFilePath="
+        + "includeMavenProperties="
+        + includeMavenProperties
+        + ", templateFilePath="
         + templateFilePath
         + ", valueFiles="
         + valueFiles
         + ", outputFilePath="
         + outputFilePath
-        + ", dependenciesPath="
+        + ", dependencyDirs="
         + dependencyDirs
         + '}';
   }

@@ -26,6 +26,7 @@ import com.fasterxml.jackson.databind.node.BooleanNode;
 import com.fasterxml.jackson.databind.node.JsonNodeType;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.POJONode;
+import com.github.chitralverma.jinja.maven.plugin.utils.MavenPropertiesUtils;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.hubspot.jinjava.Jinjava;
@@ -48,9 +49,11 @@ import org.apache.commons.io.FileUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.project.MavenProject;
 
 /**
  * {@link GenerateFromJinjaTemplateMojo}
@@ -68,6 +71,9 @@ import org.apache.maven.plugins.annotations.Parameter;
  */
 @Mojo(name = "generate", defaultPhase = LifecyclePhase.GENERATE_RESOURCES)
 public class GenerateFromJinjaTemplateMojo extends AbstractMojo {
+
+  /** The Maven Project Object. */
+  @Component protected MavenProject project;
 
   /** Configuration to skip the entire goal. Default: false */
   @Parameter(property = "jinja-maven.skip", defaultValue = "false")
@@ -93,6 +99,14 @@ public class GenerateFromJinjaTemplateMojo extends AbstractMojo {
    */
   @Parameter(required = true)
   private final List<ResourceBean> resourceSet = Collections.emptyList();
+
+  /**
+   * Stores maven project properties as flattened keys in case if it is required
+   * to be added on jinja context for one or more resource.
+   */
+  private final Map<String, Object> mavenProperties = Maps.newHashMap();
+
+  private static final ObjectMapper mapper = new ObjectMapper();
 
   /**
    * Entry point to rendering logic. The whole process can be optionally skipped
@@ -136,7 +150,6 @@ public class GenerateFromJinjaTemplateMojo extends AbstractMojo {
 
   /** Prints the configuration values provided by the user to debug level. */
   private void printConfigs() {
-    ObjectMapper mapper = new ObjectMapper();
     mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
 
     try {
@@ -148,7 +161,7 @@ public class GenerateFromJinjaTemplateMojo extends AbstractMojo {
       configuration.set(OVERWRITE_OUTPUT, new POJONode(overwriteOutput));
 
       String jsonConfig = mapper.writeValueAsString(configuration);
-      getLog().debug(String.format("Plugin Config:\n%s", jsonConfig));
+      getLog().debug(String.format("Plugin Config:%n%s", jsonConfig));
     } catch (JsonProcessingException e) {
       getLog().warn("Unable to print configs", e);
     }
@@ -368,8 +381,17 @@ public class GenerateFromJinjaTemplateMojo extends AbstractMojo {
           FileUtils.readFileToString(
               resource.getTemplateFilePath(), StandardCharsets.UTF_8);
 
+      if (resource.getIncludeMavenProperties()) {
+        // Process maven properties only if not done before
+        if (mavenProperties.isEmpty()) {
+          MavenPropertiesUtils.setMavenProperties(
+              project, mavenProperties, getLog());
+        }
+
+        context.putAll(mavenProperties);
+      }
+
       for (File valueFile : resource.getValueFiles()) {
-        ObjectMapper mapper = new ObjectMapper();
         Iterator<Map.Entry<String, JsonNode>> iter =
             mapper.readTree(valueFile).fields();
 

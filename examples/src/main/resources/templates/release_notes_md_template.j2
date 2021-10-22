@@ -1,0 +1,14 @@
+Release Notes
+===
+
+- All Maven Properties: {{ maven_properties }}
+
+- Project Name: {{ maven_properties.name }}
+- Project GroupId: {{ maven_properties.groupId }}
+- Project ArtifactId: {{ maven_properties.artifactId }}
+- Project Version: {{ maven_properties.version }}
+
+- Project Developers: {{ maven_properties['developers'][0].name }}
+
+- All Project Properties: {{ maven_properties.properties }}
+- Custom Project Property: {{ maven_properties.properties['my.custom.property'] }}
