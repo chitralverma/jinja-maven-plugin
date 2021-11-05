@@ -19,6 +19,7 @@ package com.github.chitralverma.jinja.maven.plugin;
 import com.google.common.collect.Lists;
 import java.io.File;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -38,7 +39,7 @@ public class ResourceBean implements Serializable {
   /**
    * Path(s) of one or more value files. Each value file must be a valid JSON.
    */
-  private List<File> valueFiles;
+  private List<File> valueFiles = new ArrayList<>();
 
   /**
    * Path to which output will be written after rendering. This path may or may

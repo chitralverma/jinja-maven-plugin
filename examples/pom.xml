@@ -83,11 +83,6 @@
                             <templateFilePath>
                                 src/main/resources/templates/release_notes_md_template.j2
                             </templateFilePath>
-                            <valueFiles>
-                                <param>
-                                    src/main/resources/values/simple/simple_values_uat.json
-                                </param>
-                            </valueFiles>
                             <outputFilePath>
                                 src/main/resources/outputs/release_notes.md
                             </outputFilePath>

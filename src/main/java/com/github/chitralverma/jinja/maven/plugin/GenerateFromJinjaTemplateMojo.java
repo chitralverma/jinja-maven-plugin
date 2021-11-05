@@ -189,7 +189,7 @@ public class GenerateFromJinjaTemplateMojo extends AbstractMojo {
   private void validateResourceSet() throws MojoFailureException {
     if (resourceSet.isEmpty()) {
       throw new MojoFailureException(
-          "Error occurred during configuration validation.",
+          ERROR_STATEMENT,
           new IllegalArgumentException(
               String.format(
                   "'%s' must be defined with at least 1 resource.",
@@ -213,18 +213,20 @@ public class GenerateFromJinjaTemplateMojo extends AbstractMojo {
       throws MojoFailureException {
     if (resource == null) {
       throw new MojoFailureException(
-          "Error occurred during configuration validation.",
+          ERROR_STATEMENT,
           new IllegalArgumentException(
               "Malformed 'resource' was encountered."));
     }
 
     validateFile("templateFilePath", resource.getTemplateFilePath());
 
-    if (resource.getValueFiles().isEmpty()) {
+    if (!resource.getIncludeMavenProperties()
+        && resource.getValueFiles().isEmpty()) {
       throw new MojoFailureException(
-          "Error occurred during configuration validation.",
+          ERROR_STATEMENT,
           new IllegalArgumentException(
-              "'valueFiles' must be defined with at least 1 path."));
+              "'valueFiles' must be defined with at least 1 path or "
+                  + "set 'includeMavenProperties' to true."));
     }
 
     for (File file : resource.getValueFiles()) {
@@ -290,7 +292,7 @@ public class GenerateFromJinjaTemplateMojo extends AbstractMojo {
             new IllegalArgumentException(
                 String.format(
                     "'outputFilePath' path '%s' must be a file.", file)));
-      } else if (!overwriteOutput) {
+      } else if (Boolean.FALSE.equals(overwriteOutput)) {
         throw new MojoFailureException(
             "Error occurred during configuration validation.",
             new IllegalArgumentException(
@@ -401,7 +403,7 @@ public class GenerateFromJinjaTemplateMojo extends AbstractMojo {
 
           if (next.getKey().contains(".")) {
             throw new MojoExecutionException(
-                "Error occurred during resource rendering.",
+                ERROR_STATEMENT,
                 new IllegalArgumentException(
                     "Keys of value files cannot contain chars in [.]"));
           }
@@ -419,7 +421,8 @@ public class GenerateFromJinjaTemplateMojo extends AbstractMojo {
       RenderResult renderResult =
           jinjava.renderForResult(templateContent, context);
 
-      if (!renderResult.getErrors().isEmpty() && failOnMissingValues) {
+      if (!renderResult.getErrors().isEmpty()
+          && Boolean.TRUE.equals(failOnMissingValues)) {
         throw new MojoExecutionException(
             "Error occurred during resource rendering.",
             new IllegalArgumentException(

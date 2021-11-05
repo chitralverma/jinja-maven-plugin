@@ -16,6 +16,8 @@
 
 package com.github.chitralverma.jinja.maven.plugin.utils;
 
+import static com.github.chitralverma.jinja.maven.plugin.PluginConstants.MAVEN_PROPERTIES;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -45,13 +47,14 @@ public class MavenPropertiesUtils {
       MavenProject project, Map<String, Object> mavenProperties, Log log)
       throws JsonProcessingException {
     MavenPropertiesUtils.addMavenField(
-        "maven_properties", project, mavenProperties, log);
+        MAVEN_PROPERTIES, project, mavenProperties, log);
 
     MavenPropertiesUtils.addMavenField(
-        "maven_properties", project.getModel(), mavenProperties, log);
+        MAVEN_PROPERTIES, project.getModel(), mavenProperties, log);
 
+    @SuppressWarnings("unchecked")
     Map<String, Object> allMavenProperties =
-        (Map) mavenProperties.get("maven_properties");
+        (Map<String, Object>) mavenProperties.get(MAVEN_PROPERTIES);
     allMavenProperties.put("properties", project.getProperties());
 
     log.debug(MavenPropertiesUtils.mapper.writeValueAsString(mavenProperties));
