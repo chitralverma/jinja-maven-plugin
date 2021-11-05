@@ -19,6 +19,7 @@ package com.github.chitralverma.jinja.maven.plugin;
 import com.google.common.collect.Lists;
 import java.io.File;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,13 +30,16 @@ import java.util.List;
  */
 public class ResourceBean implements Serializable {
 
+  /** Flag to include Maven project properties in context. */
+  private boolean includeMavenProperties = true;
+
   /** Path to a template file. This can be any text file. */
   private File templateFilePath;
 
   /**
    * Path(s) of one or more value files. Each value file must be a valid JSON.
    */
-  private List<File> valueFiles;
+  private List<File> valueFiles = new ArrayList<>();
 
   /**
    * Path to which output will be written after rendering. This path may or may
@@ -81,16 +85,26 @@ public class ResourceBean implements Serializable {
     this.dependencyDirs = dependencyDirs;
   }
 
+  public boolean getIncludeMavenProperties() {
+    return includeMavenProperties;
+  }
+
+  public void setIncludeMavenProperties(boolean includeMavenProperties) {
+    this.includeMavenProperties = includeMavenProperties;
+  }
+
   @Override
   public String toString() {
     return "ResourceBean{"
-        + "templateFilePath="
+        + "includeMavenProperties="
+        + includeMavenProperties
+        + ", templateFilePath="
         + templateFilePath
         + ", valueFiles="
         + valueFiles
         + ", outputFilePath="
         + outputFilePath
-        + ", dependenciesPath="
+        + ", dependencyDirs="
         + dependencyDirs
         + '}';
   }

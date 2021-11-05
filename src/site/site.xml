@@ -46,6 +46,7 @@
             <item name="Simple Substitution" href="examples.html#Simple_Substitution"/>
             <item name="Complex Case" href="examples.html#Complex_Substitutions_and_Statements"/>
             <item name="Rendering Profiles" href="examples.html#Rendering_Profiles"/>
+            <item name="Using Maven Properties" href="examples.html#Using_Maven_Properties"/>
         </menu>
 
         <menu ref="reports"/>

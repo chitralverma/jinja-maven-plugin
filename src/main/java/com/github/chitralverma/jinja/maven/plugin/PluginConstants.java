@@ -21,11 +21,16 @@ public final class PluginConstants {
 
   private PluginConstants() {}
 
-  public static String DEFAULT_PLUGIN_GOAL = "generate";
+  public static final String DEFAULT_PLUGIN_GOAL = "generate";
 
-  public static String SKIP = "jinja-maven.skip";
-  public static String RESOURCE_SET = "jinja-maven.resourceSet";
-  public static String FAIL_ON_MISSING_VALUES =
+  public static final String SKIP = "jinja-maven.skip";
+  public static final String RESOURCE_SET = "jinja-maven.resourceSet";
+  public static final String FAIL_ON_MISSING_VALUES =
       "jinja-maven.failOnMissingValues";
-  public static String OVERWRITE_OUTPUT = "jinja-maven.overwriteOutput";
+  public static final String OVERWRITE_OUTPUT = "jinja-maven.overwriteOutput";
+
+  public static final String MAVEN_PROPERTIES = "maven_properties";
+
+  public static final String ERROR_STATEMENT =
+      "Error occurred during configuration validation.";
 }

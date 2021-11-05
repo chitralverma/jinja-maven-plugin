@@ -26,6 +26,7 @@ import com.fasterxml.jackson.databind.node.BooleanNode;
 import com.fasterxml.jackson.databind.node.JsonNodeType;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.POJONode;
+import com.github.chitralverma.jinja.maven.plugin.utils.MavenPropertiesUtils;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.hubspot.jinjava.Jinjava;
@@ -48,9 +49,11 @@ import org.apache.commons.io.FileUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.project.MavenProject;
 
 /**
  * {@link GenerateFromJinjaTemplateMojo}
@@ -68,6 +71,9 @@ import org.apache.maven.plugins.annotations.Parameter;
  */
 @Mojo(name = "generate", defaultPhase = LifecyclePhase.GENERATE_RESOURCES)
 public class GenerateFromJinjaTemplateMojo extends AbstractMojo {
+
+  /** The Maven Project Object. */
+  @Component protected MavenProject project;
 
   /** Configuration to skip the entire goal. Default: false */
   @Parameter(property = "jinja-maven.skip", defaultValue = "false")
@@ -93,6 +99,14 @@ public class GenerateFromJinjaTemplateMojo extends AbstractMojo {
    */
   @Parameter(required = true)
   private final List<ResourceBean> resourceSet = Collections.emptyList();
+
+  /**
+   * Stores maven project properties as flattened keys in case if it is required
+   * to be added on jinja context for one or more resource.
+   */
+  private final Map<String, Object> mavenProperties = Maps.newHashMap();
+
+  private static final ObjectMapper mapper = new ObjectMapper();
 
   /**
    * Entry point to rendering logic. The whole process can be optionally skipped
@@ -136,7 +150,6 @@ public class GenerateFromJinjaTemplateMojo extends AbstractMojo {
 
   /** Prints the configuration values provided by the user to debug level. */
   private void printConfigs() {
-    ObjectMapper mapper = new ObjectMapper();
     mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
 
     try {
@@ -148,7 +161,7 @@ public class GenerateFromJinjaTemplateMojo extends AbstractMojo {
       configuration.set(OVERWRITE_OUTPUT, new POJONode(overwriteOutput));
 
       String jsonConfig = mapper.writeValueAsString(configuration);
-      getLog().debug(String.format("Plugin Config:\n%s", jsonConfig));
+      getLog().debug(String.format("Plugin Config:%n%s", jsonConfig));
     } catch (JsonProcessingException e) {
       getLog().warn("Unable to print configs", e);
     }
@@ -176,7 +189,7 @@ public class GenerateFromJinjaTemplateMojo extends AbstractMojo {
   private void validateResourceSet() throws MojoFailureException {
     if (resourceSet.isEmpty()) {
       throw new MojoFailureException(
-          "Error occurred during configuration validation.",
+          ERROR_STATEMENT,
           new IllegalArgumentException(
               String.format(
                   "'%s' must be defined with at least 1 resource.",
@@ -200,18 +213,20 @@ public class GenerateFromJinjaTemplateMojo extends AbstractMojo {
       throws MojoFailureException {
     if (resource == null) {
       throw new MojoFailureException(
-          "Error occurred during configuration validation.",
+          ERROR_STATEMENT,
           new IllegalArgumentException(
               "Malformed 'resource' was encountered."));
     }
 
     validateFile("templateFilePath", resource.getTemplateFilePath());
 
-    if (resource.getValueFiles().isEmpty()) {
+    if (!resource.getIncludeMavenProperties()
+        && resource.getValueFiles().isEmpty()) {
       throw new MojoFailureException(
-          "Error occurred during configuration validation.",
+          ERROR_STATEMENT,
           new IllegalArgumentException(
-              "'valueFiles' must be defined with at least 1 path."));
+              "'valueFiles' must be defined with at least 1 path or "
+                  + "set 'includeMavenProperties' to true."));
     }
 
     for (File file : resource.getValueFiles()) {
@@ -233,14 +248,14 @@ public class GenerateFromJinjaTemplateMojo extends AbstractMojo {
   private void validateFile(String key, File file) throws MojoFailureException {
     if (file == null) {
       throw new MojoFailureException(
-          "Error occurred during configuration validation.",
+          ERROR_STATEMENT,
           new IllegalArgumentException(
               String.format("'%s' path must not be null.", key)));
     }
 
     if (!file.exists()) {
       throw new MojoFailureException(
-          "Error occurred during configuration validation.",
+          ERROR_STATEMENT,
           new IllegalArgumentException(
               String.format(
                   "Provided %s at location '%s' does not exist.", key, file)));
@@ -248,7 +263,7 @@ public class GenerateFromJinjaTemplateMojo extends AbstractMojo {
 
     if (!file.isFile()) {
       throw new MojoFailureException(
-          "Error occurred during configuration validation.",
+          ERROR_STATEMENT,
           new IllegalArgumentException(
               String.format(
                   "Provided %s at location '%s' must be a file.", key, file)));
@@ -265,7 +280,7 @@ public class GenerateFromJinjaTemplateMojo extends AbstractMojo {
   private void validateOutputFile(File file) throws MojoFailureException {
     if (file == null) {
       throw new MojoFailureException(
-          "Error occurred during configuration validation.",
+          ERROR_STATEMENT,
           new IllegalArgumentException(
               "'outputFilePath' path must not be null."));
     }
@@ -273,13 +288,13 @@ public class GenerateFromJinjaTemplateMojo extends AbstractMojo {
     if (file.exists()) {
       if (file.isDirectory()) {
         throw new MojoFailureException(
-            "Error occurred during configuration validation.",
+            ERROR_STATEMENT,
             new IllegalArgumentException(
                 String.format(
                     "'outputFilePath' path '%s' must be a file.", file)));
-      } else if (!overwriteOutput) {
+      } else if (Boolean.FALSE.equals(overwriteOutput)) {
         throw new MojoFailureException(
-            "Error occurred during configuration validation.",
+            ERROR_STATEMENT,
             new IllegalArgumentException(
                 "Overwriting output files has been disabled in plugin config."
                     + " Set 'overwriteOutput' config to true to allow this."));
@@ -309,14 +324,14 @@ public class GenerateFromJinjaTemplateMojo extends AbstractMojo {
       for (File file : dirs) {
         if (file == null) {
           throw new MojoFailureException(
-              "Error occurred during configuration validation.",
+              ERROR_STATEMENT,
               new IllegalArgumentException(
                   "'dependencyPath' path must not be null."));
         }
 
         if (!file.exists()) {
           throw new MojoFailureException(
-              "Error occurred during configuration validation.",
+              ERROR_STATEMENT,
               new IllegalArgumentException(
                   String.format(
                       "Provided dependencyPath at location '%s' does not exist.",
@@ -325,7 +340,7 @@ public class GenerateFromJinjaTemplateMojo extends AbstractMojo {
 
         if (file.isFile()) {
           throw new MojoFailureException(
-              "Error occurred during configuration validation.",
+              ERROR_STATEMENT,
               new IllegalArgumentException(
                   String.format(
                       "Provided dependencyPath at location '%s' must be a directory.",
@@ -358,6 +373,7 @@ public class GenerateFromJinjaTemplateMojo extends AbstractMojo {
         JinjavaConfig.newBuilder()
             .withFailOnUnknownTokens(failOnMissingValues)
             .build();
+
     Jinjava jinjava = new Jinjava(jc);
     addDependencyLocators(jinjava, resource.getDependencyDirs());
 
@@ -368,49 +384,88 @@ public class GenerateFromJinjaTemplateMojo extends AbstractMojo {
           FileUtils.readFileToString(
               resource.getTemplateFilePath(), StandardCharsets.UTF_8);
 
+      // Add context from maven properties if enabled
+      if (resource.getIncludeMavenProperties()) {
+        addContextFromMavenProperties(context);
+      }
+
+      // Add context from provided value file(s)
       for (File valueFile : resource.getValueFiles()) {
-        ObjectMapper mapper = new ObjectMapper();
-        Iterator<Map.Entry<String, JsonNode>> iter =
-            mapper.readTree(valueFile).fields();
-
-        while (iter.hasNext()) {
-          Map.Entry<String, JsonNode> next = iter.next();
-          JsonNodeType nodeType = next.getValue().getNodeType();
-
-          if (next.getKey().contains(".")) {
-            throw new MojoExecutionException(
-                "Error occurred during resource rendering.",
-                new IllegalArgumentException(
-                    "Keys of value files cannot contain chars in [.]"));
-          }
-
-          getLog().debug(String.format("Added entry [ %s ] to context.", next));
-          if (nodeType == JsonNodeType.ARRAY
-              || nodeType == JsonNodeType.OBJECT) {
-            context.put(next.getKey(), next.getValue());
-          } else {
-            context.put(next.getKey(), next.getValue().asText());
-          }
-        }
+        addContextFromValueFile(valueFile, context);
       }
 
       RenderResult renderResult =
           jinjava.renderForResult(templateContent, context);
 
-      if (!renderResult.getErrors().isEmpty() && failOnMissingValues) {
+      if (!renderResult.getErrors().isEmpty()
+          && Boolean.TRUE.equals(failOnMissingValues)) {
         throw new MojoExecutionException(
             "Error occurred during resource rendering.",
             new IllegalArgumentException(
                 renderResult.getErrors().stream()
                     .map(Object::toString)
                     .collect(Collectors.joining(","))));
-
       } else {
         return renderResult.getOutput();
       }
     } catch (IOException e) {
       throw new MojoExecutionException(
           "Error occurred during resource rendering.", e);
+    }
+  }
+
+  /**
+   * Parses the instance of {@link MavenProject} and adds its fields (and nested
+   * fields) to context while preserving their type.
+   *
+   * @param context jinja context of values
+   * @throws JsonProcessingException this occurs when {@link MavenProject}
+   *     cannot be successfully parsed to context
+   */
+  private void addContextFromMavenProperties(Map<String, Object> context)
+      throws JsonProcessingException {
+    // Process maven properties only if not done before
+    if (mavenProperties.isEmpty()) {
+      MavenPropertiesUtils.setMavenProperties(
+          project, mavenProperties, getLog());
+    }
+
+    getLog().info("Adding maven properties to context.");
+    context.putAll(mavenProperties);
+  }
+
+  /**
+   * Reads the provided value file as JSON and adds nodes to context while
+   * preserving their type.
+   *
+   * @param valueFile provided value file
+   * @param context jinja context of values
+   * @throws IOException this occurs in case of file reading issues
+   * @throws MojoExecutionException this occurs in case of invalid keys
+   */
+  private void addContextFromValueFile(
+      File valueFile, Map<String, Object> context)
+      throws IOException, MojoExecutionException {
+    Iterator<Map.Entry<String, JsonNode>> iter =
+        mapper.readTree(valueFile).fields();
+
+    while (iter.hasNext()) {
+      Map.Entry<String, JsonNode> next = iter.next();
+      JsonNodeType nodeType = next.getValue().getNodeType();
+
+      if (next.getKey().contains(".")) {
+        throw new MojoExecutionException(
+            ERROR_STATEMENT,
+            new IllegalArgumentException(
+                "Keys of value files cannot contain chars in [.]"));
+      }
+
+      getLog().debug(String.format("Adding entry [ %s ] to context.", next));
+      if (nodeType == JsonNodeType.ARRAY || nodeType == JsonNodeType.OBJECT) {
+        context.put(next.getKey(), next.getValue());
+      } else {
+        context.put(next.getKey(), next.getValue().asText());
+      }
     }
   }
 

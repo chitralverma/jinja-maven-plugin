@@ -4,9 +4,21 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <name>${project.artifactId}</name>
     <groupId>com.github.chitralverma</groupId>
     <artifactId>jinja-maven-plugin-examples</artifactId>
     <version>1.0-SNAPSHOT</version>
+
+    <developers>
+        <developer>
+            <name>Jon Doe</name>
+            <email>jon@doe.com</email>
+        </developer>
+    </developers>
+
+    <properties>
+        <my.custom.property>test_value</my.custom.property>
+    </properties>
 
     <pluginRepositories>
 
@@ -65,6 +77,17 @@
                                 </param>
                             </dependencyDirs>
                         </resource>
+
+                        <resource>
+                            <includeMavenProperties>true</includeMavenProperties>
+                            <templateFilePath>
+                                src/main/resources/templates/release_notes_md_template.j2
+                            </templateFilePath>
+                            <outputFilePath>
+                                src/main/resources/outputs/release_notes.md
+                            </outputFilePath>
+                        </resource>
+
                     </resourceSet>
                 </configuration>
                 <executions>
