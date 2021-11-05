@@ -419,3 +419,90 @@ rendered.
     "db_connect": "jdbc:mysql://1.2.3.4:9876/"
   }
   ```
+
+## Using Maven Properties
+
+This example demonstrates how to use maven in resources of provided jinja template with or without value files.
+
+* **Use case:** This is a simple use case of direct value substitution of maven properties into the
+  template file.
+
+
+* **Template File:**
+
+  ```markdown
+    Release Notes
+    ===
+
+    - Project Name: {{ maven_properties.name }}
+    - Project GroupId: {{ maven_properties.groupId }}
+    - Project ArtifactId: {{ maven_properties.artifactId }}
+    - Project Version: {{ maven_properties.version }}
+  
+    - Project Developers: {{ maven_properties['developers'][0].name }}
+    - Custom Project Property: {{ maven_properties.properties['my.custom.property'] }}
+  ```
+
+
+* **Plugin configuration:** The project's `pom.xml` can look something like
+  below, with an additional configuration `includeMavenProperties`. To interpolate 
+  values from maven properties prefix them with `maven_properties.`. For example, 
+  to include `groupId` of the project define `{{ maven_properties.groupId }}` in 
+  your j2 templates.
+
+  **Note**: The value for this configuration is set to `true` by default.
+  This can be toggled to exclude maven properties to be added to context.
+
+   ```xml
+      <project>
+          ...
+          
+              <build>
+                  ...
+        
+                  <plugins>
+                      ...
+          
+                      <plugin>
+                          <groupId>com.github.chitralverma</groupId>
+                          <artifactId>jinja-maven-plugin</artifactId>
+                          <version>${latest.plugin.version}</version>
+                          <configuration>
+                              <includeMavenProperties>true</includeMavenProperties>
+                              <resourceSet>
+      
+                                  <!-- Profile for UAT Environment -->
+                                  <resource>
+                                      <templateFilePath>/path/to/template/release_notes_md_template.j2</templateFilePath>
+                                      <outputFilePath>src/main/resources/jinja/results/release_notes.md</outputFilePath>
+                                  </resource>
+      
+                              </resourceSet>
+                          </configuration>
+                      </plugin>
+        
+                      ...
+                  </plugins>
+                
+                  ...
+              </build>
+      
+          ...
+      </project>
+   ```
+
+
+* **Output File:**
+
+  ```markdown
+    Release Notes
+    ===
+
+    - Project Name: jinja-maven-plugin-examples
+    - Project GroupId: com.github.chitralverma
+    - Project ArtifactId: jinja-maven-plugin-examples
+    - Project Version: 1.0-SNAPSHOT
+
+    - Project Developers: Jon Doe
+    - Custom Project Property: test_value
+  ```
