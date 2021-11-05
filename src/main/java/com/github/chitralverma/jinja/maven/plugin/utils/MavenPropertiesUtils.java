@@ -46,6 +46,8 @@ public class MavenPropertiesUtils {
   public static void setMavenProperties(
       MavenProject project, Map<String, Object> mavenProperties, Log log)
       throws JsonProcessingException {
+    log.debug("Initializing maven properties.");
+
     MavenPropertiesUtils.addMavenField(
         MAVEN_PROPERTIES, project, mavenProperties, log);
 
