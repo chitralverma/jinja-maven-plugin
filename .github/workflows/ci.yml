@@ -52,7 +52,7 @@ jobs:
           server-id: central-portal-snapshots
           server-username: CI_DEPLOY_USERNAME
           server-password: CI_DEPLOY_PASSWORD
-          gpg-private-key: ${{ secrets.PGP_SECRET }}
+          # gpg-private-key: ${{ secrets.PGP_SECRET }}
           gpg-passphrase: MAVEN_GPG_PASSPHRASE
 
       - name: "Publish"
