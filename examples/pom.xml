@@ -88,6 +88,21 @@
                             </outputFilePath>
                         </resource>
 
+                        <resource>
+                            <includeMavenProperties>true</includeMavenProperties>
+                            <templateFilePath>
+                                src/main/resources/templates/inclusion_template.j2
+                            </templateFilePath>
+                            <outputFilePath>
+                                src/main/resources/outputs/inclusion_template.yaml
+                            </outputFilePath>
+                            <dependencyDirs>
+                                <param>
+                                    src/main/resources/templates/
+                                </param>
+                            </dependencyDirs>
+                        </resource>
+
                     </resourceSet>
                 </configuration>
                 <executions>
