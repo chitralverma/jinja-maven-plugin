@@ -1,0 +1,80 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  lint_build_test:
+    name: "Lint, Build & Test"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v5
+        with:
+          cache: 'maven'
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Lint
+        run: mvn --batch-mode -no-transfer-progress -V verify
+
+      - name: Test
+        run: mvn test -B
+
+  publish_snapshot:
+    name: "Publish snapshot"
+    needs: lint_build_test
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    permissions:
+      contents: write
+      packages: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v5
+        with:
+          cache: 'maven'
+          distribution: 'temurin'
+          java-version: '17'
+          server-id: central-portal-snapshots
+          server-username: ${{ secrets.CI_DEPLOY_USERNAME }}
+          server-password: ${{ secrets.CI_DEPLOY_PASSWORD }}
+
+      - name: "Publish"
+        run: mvn deploy -B -P release -DskipTests=true -Dinvoker.skip=true -Dmaven.javadoc.skip=true
+
+      - name: Generate Site
+        run: mvn site
+
+      - name: Upload Site Artifact
+        id: upload_site
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: ./target/site
+
+  publish_site:
+    name: "Publish site"
+    needs: lint_build_test
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    environment:
+        name: github-pages
+        url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Deploy to GitHub Pages
+        id: upload_site
+        uses: actions/deploy-pages@v4

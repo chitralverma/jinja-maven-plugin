@@ -1,0 +1,5 @@
+allConfiguration:
+  logger:
+    pattern: "%-5p [%t]: %m%n"
+    a.b.c: OFF
+  

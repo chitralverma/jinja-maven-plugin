@@ -1,5 +1,5 @@
 /*
- *    Copyright 2021 Chitral Verma
+ *    Copyright 2025 Chitral Verma
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -25,8 +25,7 @@ import java.util.List;
 /**
  * {@link ResourceBean}
  *
- * <p>Holds deserialized definition of a resource defined in the resource set of
- * the plugin.
+ * <p>Holds deserialized definition of a resource defined in the resource set of the plugin.
  */
 public class ResourceBean implements Serializable {
 
@@ -36,20 +35,18 @@ public class ResourceBean implements Serializable {
   /** Path to a template file. This can be any text file. */
   private File templateFilePath;
 
-  /**
-   * Path(s) of one or more value files. Each value file must be a valid JSON.
-   */
+  /** Path(s) of one or more value files. Each value file must be a valid JSON. */
   private List<File> valueFiles = new ArrayList<>();
 
   /**
-   * Path to which output will be written after rendering. This path may or may
-   * not exist and can be optionally overwritten.
+   * Path to which output will be written after rendering. This path may or may not exist and can be
+   * optionally overwritten.
    */
   private File outputFilePath;
 
   /**
-   * This is an optional field, and describes path to one or more directories
-   * which contains resources to be located. These directories must exist.
+   * This is an optional field, and describes path to one or more directories which contains
+   * resources to be located. These directories must exist.
    */
   private List<File> dependencyDirs = Lists.newLinkedList();
 
