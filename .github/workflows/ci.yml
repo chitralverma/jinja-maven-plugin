@@ -52,8 +52,12 @@ jobs:
           server-id: central-portal-snapshots
           server-username: ${{ secrets.CI_DEPLOY_USERNAME }}
           server-password: ${{ secrets.CI_DEPLOY_PASSWORD }}
+          gpg-private-key: ${{ secrets.PGP_SECRET }}
+          gpg-passphrase: ${{ secrets.PGP_PASSPHRASE }}
 
       - name: "Publish"
+        env:
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.PGP_PASSPHRASE }}
         run: mvn deploy -B -P release -DskipTests=true -Dinvoker.skip=true -Dmaven.javadoc.skip=true
 
       - name: Generate Site
@@ -67,7 +71,7 @@ jobs:
 
   publish_site:
     name: "Publish site"
-    needs: lint_build_test
+    needs: publish_snapshot
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     environment:
