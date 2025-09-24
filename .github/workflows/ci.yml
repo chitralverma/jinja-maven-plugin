@@ -50,13 +50,15 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
           server-id: central-portal-snapshots
-          server-username: ${{ secrets.CI_DEPLOY_USERNAME }}
-          server-password: ${{ secrets.CI_DEPLOY_PASSWORD }}
+          server-username: CI_DEPLOY_USERNAME
+          server-password: CI_DEPLOY_PASSWORD
           gpg-private-key: ${{ secrets.PGP_SECRET }}
-          gpg-passphrase: ${{ secrets.PGP_PASSPHRASE }}
+          gpg-passphrase: MAVEN_GPG_PASSPHRASE
 
       - name: "Publish"
         env:
+          CI_DEPLOY_USERNAME: ${{ secrets.CI_DEPLOY_USERNAME }}
+          CI_DEPLOY_PASSWORD: ${{ secrets.CI_DEPLOY_PASSWORD }}
           MAVEN_GPG_PASSPHRASE: ${{ secrets.PGP_PASSPHRASE }}
         run: mvn deploy -B -P release -DskipTests=true -Dinvoker.skip=true -Dmaven.javadoc.skip=true
 
