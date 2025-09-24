@@ -1,5 +1,5 @@
 <!--
-   Copyright 2021 Chitral Verma
+   Copyright 2025 Chitral Verma
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -248,13 +248,13 @@ rendered.
                       <name>uat_build</name>
                   </property>
               </activation>
-  
+
               ...
-  
+
               <build>
                   <plugins>
                       ...
-          
+
                       <plugin>
                           <groupId>com.github.chitralverma</groupId>
                           <artifactId>jinja-maven-plugin</artifactId>
@@ -279,7 +279,7 @@ rendered.
                   </plugins>
               </build>
           </profile>
-  
+
           <profile>
               <!-- Profile for PROD Environment -->
               <id>prod_build</id>
@@ -288,13 +288,13 @@ rendered.
                       <name>prod_build</name>
                   </property>
               </activation>
-  
+
               ...
-  
+
               <build>
                   <plugins>
                       ...
-          
+
                       <plugin>
                           <groupId>com.github.chitralverma</groupId>
                           <artifactId>jinja-maven-plugin</artifactId>
@@ -319,10 +319,10 @@ rendered.
                   </plugins>
               </build>
           </profile>
-  
+
           ...
       </profiles>
-  
+
       ...
   </project>
   ```
@@ -335,13 +335,13 @@ rendered.
       ```xml
       <project>
           ...
-          
+
               <build>
                   ...
-        
+
                   <plugins>
                       ...
-          
+
                       <plugin>
                           <groupId>com.github.chitralverma</groupId>
                           <artifactId>jinja-maven-plugin</artifactId>
@@ -351,7 +351,7 @@ rendered.
                               <failOnMissingValues>true</failOnMissingValues>
                               <overwriteOutput>false</overwriteOutput>
                               <resourceSet>
-      
+
                                   <!-- Profile for UAT Environment -->
                                   <resource>
                                       <templateFilePath>/path/to/template/a_template.j2</templateFilePath>
@@ -360,7 +360,7 @@ rendered.
                                       </valueFiles>
                                       <outputFilePath>src/main/resources/jinja/results/uat_config.json</outputFilePath>
                                   </resource>
-                                    
+
                                   <!-- Profile for PROD Environment -->
                                   <resource>
                                       <templateFilePath>/path/to/template/a_template.j2</templateFilePath>
@@ -369,17 +369,17 @@ rendered.
                                       </valueFiles>
                                       <outputFilePath>src/main/resources/jinja/results/prod_config.json</outputFilePath>
                                   </resource>
-      
+
                               </resourceSet>
                           </configuration>
                       </plugin>
-        
+
                       ...
                   </plugins>
-                
+
                   ...
               </build>
-      
+
           ...
       </project>
       ```
@@ -391,7 +391,7 @@ rendered.
       ```commandline
       # For UAT environment
       mvn clean package -Duat_build
-      
+
       # For PROD environment
       mvn clean package -Dprod_build
       ```
@@ -438,16 +438,16 @@ This example demonstrates how to use maven in resources of provided jinja templa
     - Project GroupId: {{ maven_properties.groupId }}
     - Project ArtifactId: {{ maven_properties.artifactId }}
     - Project Version: {{ maven_properties.version }}
-  
+
     - Project Developers: {{ maven_properties['developers'][0].name }}
     - Custom Project Property: {{ maven_properties.properties['my.custom.property'] }}
   ```
 
 
 * **Plugin configuration:** The project's `pom.xml` can look something like
-  below, with an additional configuration `includeMavenProperties`. To interpolate 
-  values from maven properties prefix them with `maven_properties.`. For example, 
-  to include `groupId` of the project define `{{ maven_properties.groupId }}` in 
+  below, with an additional configuration `includeMavenProperties`. To interpolate
+  values from maven properties prefix them with `maven_properties.`. For example,
+  to include `groupId` of the project define `{{ maven_properties.groupId }}` in
   your j2 templates.
 
   **Note**: The value for this configuration is set to `true` by default.
@@ -456,13 +456,13 @@ This example demonstrates how to use maven in resources of provided jinja templa
    ```xml
       <project>
           ...
-          
+
               <build>
                   ...
-        
+
                   <plugins>
                       ...
-          
+
                       <plugin>
                           <groupId>com.github.chitralverma</groupId>
                           <artifactId>jinja-maven-plugin</artifactId>
@@ -470,23 +470,23 @@ This example demonstrates how to use maven in resources of provided jinja templa
                           <configuration>
                               <includeMavenProperties>true</includeMavenProperties>
                               <resourceSet>
-      
+
                                   <!-- Profile for UAT Environment -->
                                   <resource>
                                       <templateFilePath>/path/to/template/release_notes_md_template.j2</templateFilePath>
                                       <outputFilePath>src/main/resources/jinja/results/release_notes.md</outputFilePath>
                                   </resource>
-      
+
                               </resourceSet>
                           </configuration>
                       </plugin>
-        
+
                       ...
                   </plugins>
-                
+
                   ...
               </build>
-      
+
           ...
       </project>
    ```

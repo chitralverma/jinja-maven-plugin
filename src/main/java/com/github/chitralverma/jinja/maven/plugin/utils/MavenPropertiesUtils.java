@@ -1,5 +1,5 @@
 /*
- *    Copyright 2021 Chitral Verma
+ *    Copyright 2025 Chitral Verma
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -48,11 +48,9 @@ public class MavenPropertiesUtils {
       throws JsonProcessingException {
     log.debug("Initializing maven properties.");
 
-    MavenPropertiesUtils.addMavenField(
-        MAVEN_PROPERTIES, project, mavenProperties, log);
+    MavenPropertiesUtils.addMavenField(MAVEN_PROPERTIES, project, mavenProperties, log);
 
-    MavenPropertiesUtils.addMavenField(
-        MAVEN_PROPERTIES, project.getModel(), mavenProperties, log);
+    MavenPropertiesUtils.addMavenField(MAVEN_PROPERTIES, project.getModel(), mavenProperties, log);
 
     @SuppressWarnings("unchecked")
     Map<String, Object> allMavenProperties =
@@ -82,10 +80,7 @@ public class MavenPropertiesUtils {
           mapper.convertValue(map, JsonNode.class);
           objectNode.putPOJO(declaredFieldName, value);
         } catch (Exception e) {
-          log.debug(
-              String.format(
-                  "Unable to process field with name '%s'.",
-                  declaredFieldName));
+          log.debug(String.format("Unable to process field with name '%s'.", declaredFieldName));
         } finally {
           flattenObjToMap(currentPath, objectNode, result);
         }
@@ -96,17 +91,14 @@ public class MavenPropertiesUtils {
   private static void flattenObjToMap(
       String currentPath, JsonNode node, Map<String, Object> result) {
     if (node.isObject()) {
-      String pathPrefix =
-          currentPath.isEmpty() ? StringUtils.EMPTY : currentPath + ".";
+      String pathPrefix = currentPath.isEmpty() ? StringUtils.EMPTY : currentPath + ".";
 
       ObjectNode objectNode = (ObjectNode) node;
-      Iterator<Map.Entry<String, JsonNode>> jsonNodeIterator =
-          objectNode.fields();
+      Iterator<Map.Entry<String, JsonNode>> jsonNodeIterator = objectNode.fields();
 
       if (!currentPath.isEmpty()) {
         Map<String, Object> obj =
-            mapper.convertValue(
-                objectNode, new TypeReference<Map<String, Object>>() {});
+            mapper.convertValue(objectNode, new TypeReference<Map<String, Object>>() {});
         result.put(currentPath, obj);
       }
 
@@ -118,14 +110,12 @@ public class MavenPropertiesUtils {
 
       if (!currentPath.isEmpty()) {
         ArrayList<Object> obj =
-            mapper.convertValue(
-                arrayNode, new TypeReference<ArrayList<Object>>() {});
+            mapper.convertValue(arrayNode, new TypeReference<ArrayList<Object>>() {});
         result.put(currentPath, obj);
       }
 
       for (int i = 0; i < arrayNode.size(); i++) {
-        flattenObjToMap(
-            String.format("%s[%s]", currentPath, i), arrayNode.get(i), result);
+        flattenObjToMap(String.format("%s[%s]", currentPath, i), arrayNode.get(i), result);
       }
     } else {
       ValueNode valueNode = (ValueNode) node;

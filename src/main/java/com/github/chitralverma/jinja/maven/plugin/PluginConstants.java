@@ -1,5 +1,5 @@
 /*
- *    Copyright 2021 Chitral Verma
+ *    Copyright 2025 Chitral Verma
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -25,12 +25,10 @@ public final class PluginConstants {
 
   public static final String SKIP = "jinja-maven.skip";
   public static final String RESOURCE_SET = "jinja-maven.resourceSet";
-  public static final String FAIL_ON_MISSING_VALUES =
-      "jinja-maven.failOnMissingValues";
+  public static final String FAIL_ON_MISSING_VALUES = "jinja-maven.failOnMissingValues";
   public static final String OVERWRITE_OUTPUT = "jinja-maven.overwriteOutput";
 
   public static final String MAVEN_PROPERTIES = "maven_properties";
 
-  public static final String ERROR_STATEMENT =
-      "Error occurred during configuration validation.";
+  public static final String ERROR_STATEMENT = "Error occurred during configuration validation.";
 }
