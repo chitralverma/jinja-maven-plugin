@@ -55,3 +55,4 @@ Thumbs.db
 *.bak
 *.tmp
 *.orig
+.factorypath

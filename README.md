@@ -14,8 +14,8 @@ see [this link](https://github.com/HubSpot/jinjava#jinjava) for more info.
 
 This project has the following requirements,
 
-- JDK 8
-- Maven 3.3 and above
+- JDK 17
+- Maven 3.9 and above
 
 ## Quick Links
 
@@ -31,20 +31,20 @@ To build this project from source, run the commands below,
 
 ```
 # Clone project to current working directory
-git clone https://github.com/chitralverma/jinja-maven-plugin.git
+git clone git@github.com:chitralverma/jinja-maven-plugin.git
 ```
 
 ```
-# Change directory to cloned project root 
+# Change directory to cloned project root
 cd jinja-maven-plugin
 ```
 
 ```
-# Build project 
+# Build project
 mvn clean install
 ```
 
-_**Note:** Maven 3.3+ and Git are required to build project from source._
+_**Note:** Maven 3.9+ and Git are required to build project from source._
 
 ## Upcoming Features
 
@@ -58,7 +58,7 @@ suggestions/ patches. You can reach me [here](mailto:chitralverma@gmail.com).
 
 ## License
 
-Copyright © 2021 Chitral Verma
+Copyright © 2025 Chitral Verma
 
 Licensed under the
 [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0)
